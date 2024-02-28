@@ -46,7 +46,7 @@ Move to the repository
 Build and install
 ```
  $ make
- $ sudo make install
+ # make install
 ```
 Optionally, install locally instead of system (~/.local/bin/)
 ```
