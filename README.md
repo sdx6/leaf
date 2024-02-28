@@ -6,7 +6,13 @@ I made this out of dissatisfaction with fetch scripts, either being way too slow
 
 `leaf` is intended to be used as a greeter to your shell, wherein over SSH, it would show important information to your session that can be looked at from a glance
 # Screenshots
+![1.png]()
 
+![2.png]()
+
+![3.png]()
+
+![4.png]()
 # Compiling from source
 Clone the repository
 ```
