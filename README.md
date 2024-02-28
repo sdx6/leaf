@@ -1,10 +1,13 @@
 # leaf - LEAh's Fetch
 A minimal, blazingly fast fetch program for Linux
-Shows only the useful things, and does them pretty
+
+Shows only the useful things, and does them pretty well
 
 I made this out of dissatisfaction with fetch scripts, either being way too slow or showing way too much information
 
-`leaf` is intended to be used as a greeter to your shell, wherein over SSH, it would show important information to your session that can be looked at from a glance
+`leaf` is intended to be used as a greeter to your shell, where over SSH, it would show important information to your session that can be looked at from a glance
+
+`leaf` is faster than all fetch scripts currently, at ~3ms on my hardware, compared to ~3s (neofetch, ~500ms cached), ~20ms (fastfetch), ~15ms (nofetch)
 # Screenshots
 ![](1.png)
 
