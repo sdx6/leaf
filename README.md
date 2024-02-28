@@ -4,7 +4,7 @@ Shows only the useful things, and does them pretty
 
 I made this out of dissatisfaction with fetch scripts, either being way too slow or showing way too much information
 
-`leaf` is intended to be used as a greeter to your shell, wherein over SSH, it would show important information to your session that can be looked at at a glance
+`leaf` is intended to be used as a greeter to your shell, wherein over SSH, it would show important information to your session that can be looked at from a glance
 # Screenshots
 
 # Compiling from source
