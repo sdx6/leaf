@@ -86,8 +86,7 @@ local tc =
     cyan = string.char(27,91)..46 .."m",
     white = string.char(27,91)..47 .."m",
   },
-  normal = string.char(27,91).."0m",
-  bold = string.char(27,91).."1m",
+  normal = string.char(27,91).."0m"
 }
 
 -- }}}
@@ -97,119 +96,101 @@ imgs =
 {
   ["bedrock"] =
   {
-    tc.bold..tc.bg.black..tc.fg.white..[[ __       ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.white..[[ \ \___   ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.white..[[  \  _ \  ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.white..[[   \___/  ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.white..[[          ]]..tc.normal,
+    tc.bg.black..tc.fg.white..[[ __       ]]..tc.normal,
+    tc.bg.black..tc.fg.white..[[ \ \___   ]]..tc.normal,
+    tc.bg.black..tc.fg.white..[[  \  _ \  ]]..tc.normal,
+    tc.bg.black..tc.fg.white..[[   \___/  ]]..tc.normal,
+    tc.bg.black..tc.fg.white..[[          ]]..tc.normal,
     text = tc.fg.white,
   },
   ["endeavouros"] =
   {
-    tc.bold..tc.bg.pink..tc.fg.black..[[     __   ]]..tc.normal,
-    tc.bold..tc.bg.pink..tc.fg.black..[[    /  \  ]]..tc.normal,
-    tc.bold..tc.bg.pink..tc.fg.black..[[  /     | ]]..tc.normal,
-    tc.bold..tc.bg.pink..tc.fg.black..[[ '_____/  ]]..tc.normal,
-    tc.bold..tc.bg.pink..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.pink..tc.fg.black..[[     __   ]]..tc.normal,
+    tc.bg.pink..tc.fg.black..[[    /  \  ]]..tc.normal,
+    tc.bg.pink..tc.fg.black..[[  /     | ]]..tc.normal,
+    tc.bg.pink..tc.fg.black..[[ '_____/  ]]..tc.normal,
+    tc.bg.pink..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.pink,
   },
   ["arch"] =
   {
-    tc.bold..tc.bg.cyan..tc.fg.black..[[          ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[    /\    ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[   /  \   ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[  /_/\_\  ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.cyan..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.cyan..tc.fg.black..[[    /\    ]]..tc.normal,
+    tc.bg.cyan..tc.fg.black..[[   /  \   ]]..tc.normal,
+    tc.bg.cyan..tc.fg.black..[[  /_/\_\  ]]..tc.normal,
+    tc.bg.cyan..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.cyan,
   },
   ["gentoo"] =
   {
-    tc.bold..tc.bg.white..tc.fg.black..[[   ___    ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[  [  _ \  ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[   >   /  ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[  (__ /   ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[   ___    ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[  [  _ \  ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[   >   /  ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[  (__ /   ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.white,
   },
   ["debian"] =
   {
-    tc.bold..tc.bg.red..tc.fg.black..[[     __   ]]..tc.normal,
-    tc.bold..tc.bg.red..tc.fg.black..[[  '/  .\' ]]..tc.normal,
-    tc.bold..tc.bg.red..tc.fg.black..[[  |  (_'  ]]..tc.normal,
-    tc.bold..tc.bg.red..tc.fg.black..[[   \      ]]..tc.normal,
-    tc.bold..tc.bg.red..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.red..tc.fg.black..[[     __   ]]..tc.normal,
+    tc.bg.red..tc.fg.black..[[  '/  .\' ]]..tc.normal,
+    tc.bg.red..tc.fg.black..[[  |  (_'  ]]..tc.normal,
+    tc.bg.red..tc.fg.black..[[   \      ]]..tc.normal,
+    tc.bg.red..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.red,
   },
   ["void"] =
   {
-    tc.bold..tc.bg.green..tc.fg.black..[[    __    ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[  ,\   \  ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[ |'\()\,| ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[  \ __\'  ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.black..tc.fg.white..[[    __    ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[  ,]]..tc.fg.white..[[\   \  ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[ |'\]]..tc.fg.white..[[()\,| ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[  \ __\'  ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[          ]]..tc.normal,
     text = tc.fg.green,
   },
   ["fedora"] =
   {
-    tc.bold..tc.bg.blue..tc.fg.black..[[   ____   ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[  /  _ \  ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[ | C/-  | ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[ |_____/  ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[   ____   ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[  /  ]]..tc.fg.white..[[_]]..tc.fg.black..[[ \  ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[ | ]]..tc.fg.white..[[C/-]]..tc.fg.black..[[  | ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[ |_____/  ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.blue,
   },
   ["alpine"] =
   {
-    tc.bold..tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[   /\     ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[  //\\/\  ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[ //  \\\\ ]]..tc.normal,
-    tc.bold..tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[   /\     ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[  //\\/\  ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[ //  \\\\ ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.blue,
   },
   ["manjaro"] =
   {
-    tc.bold..tc.bg.black..tc.fg.green..[[ ,___,,_, ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.green..[[ | ,_]| | ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.green..[[ | |  | | ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.green..[[ |_|__|_| ]]..tc.normal,
-    tc.bold..tc.bg.black..tc.fg.green..[[          ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[ ,___,,_, ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[ | ,_|| | ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[ | |  | | ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[ |_|__|_| ]]..tc.normal,
+    tc.bg.black..tc.fg.green..[[          ]]..tc.normal,
     text = tc.fg.green,
   },
-  ["ubuntu"] =
+  ["nixos"] =
   {
-    tc.bold..tc.bg.yellow..tc.fg.black..[[    __    ]]..tc.normal,
-    tc.bold..tc.bg.yellow..tc.fg.black..[[ ()'__'() ]]..tc.normal,
-    tc.bold..tc.bg.yellow..tc.fg.black..[[ | |__| | ]]..tc.normal,
-    tc.bold..tc.bg.yellow..tc.fg.black..[[  \ __ /  ]]..tc.normal,
-    tc.bold..tc.bg.yellow..tc.fg.black..[[    ^^    ]]..tc.normal,
-    text = tc.fg.yellow,
-  },
-  ["opensuse-leap"] =
-  {
-    tc.bold..tc.bg.green..tc.fg.black..[[    .___  ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[   _| ()\ ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[ /    --' ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[ \ __^/   ]]..tc.normal,
-    tc.bold..tc.bg.green..tc.fg.black..[[          ]]..tc.normal,
-    text = tc.fg.green,
-  },
-  ["opensuse-tumbleweed"] =
-  {
-    tc.bold..tc.bg.cyan..tc.fg.black..[[  _    _  ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[ / \  / \ ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[ |  )(  | ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[ \_/  \_/ ]]..tc.normal,
-    tc.bold..tc.bg.cyan..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.black..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[   ==]]..tc.fg.cyan..[[\\   ]]..tc.normal,
+    tc.bg.black..tc.fg.cyan..[[  // ]]..tc.fg.blue..[[ //  ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[   \\]]..tc.fg.cyan..[[==   ]]..tc.normal,
+    tc.bg.black..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.cyan,
   },
   [""] =
   {
-    tc.bold..tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
-    tc.bold..tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.white,
   },
 
@@ -218,21 +199,9 @@ imgs =
 -- }}}
 
 -- }}}
--- {{{ handle C variables 
+-- {{{ handle C functions 
 
-wlanip = wlanip or "0.0.0.0"
-if wlanip == "0.0.0.0" then
-  wlanip = "na"
-end
-
-ethip = ethip or "0.0.0.0"
-if ethip == "0.0.0.0" then
-  ethip = "na"
-end
-
-days = days or 0
-hours = hours or 0
-minutes = minutes or 0
+get = get or {}
 
 -- }}}
 -- {{{ process arguments
@@ -283,7 +252,6 @@ while true do
   args["--os-release"] = args["-os"]
   args["--hostname"] = args["-hn"]
   args["--kernel-version"] = args["-kv"]
-  args["--override"] = args["-o"]
   args["--help"] = args["-h"]
   local dobreak = false
   for i = 1, #arg do
@@ -301,61 +269,59 @@ while true do
   -- }}}
   -- {{{ the fetching
 
-  get =
-  {
-    distro = function()
-      local d = {}
-      for l in io.lines(os_release) do
-        table.insert(d, l)
-      end
-      for i = 1, #d do
-        if d[i]:sub(1, 3) == "ID=" then
-          local s = d[i]
-          s = string.tokenize(s)
-          for _ = 1, 3 do
-            table.remove(s, 1)
-          end
-          if s[1] == "\"" and s[#s] == "\"" then
-            table.remove(s, 1)
-            table.remove(s, #s)
-          end
-          return table.concat(s)
+  get.distro = function()
+    local d = {}
+    for l in io.lines(os_release) do
+      table.insert(d, l)
+    end
+    for i = 1, #d do
+      if d[i]:sub(1, 3) == "ID=" then
+        local s = d[i]
+        s = string.tokenize(s)
+        for _ = 1, 3 do
+          table.remove(s, 1)
         end
+        if s[1] == "\"" and s[#s] == "\"" then
+          table.remove(s, 1)
+          table.remove(s, #s)
+        end
+        return table.concat(s)
       end
-    end,
-    kernel = function()
-      local k = {}
-      for l in io.lines(version) do
-        table.insert(k, l)
-      end
-      k = string.split(table.concat(k, " "))
-      return k[3]
-    end,
-    host = function()
-      local h = {}
-      for l in io.lines(hostname) do
-        table.insert(h, l)
-      end
-      return h[1]
-    end,
-  }
+    end
+  end
+
+  get.kernel = function()
+    local k = {}
+    for l in io.lines(version) do
+      table.insert(k, l)
+    end
+    k = string.split(table.concat(k, " "))
+    return k[3]
+  end
+
+  get.host = function()
+    local h = {}
+    for l in io.lines(hostname) do
+      table.insert(h, l)
+    end
+    return h[1]
+  end
 
   -- }}}
 
   -- {{{ display
 
-  if not distro then
-    distro = get.distro()
-  end
+  distro = distro or get.distro()
+
   if imgs[distro] then
     io.write(string.format("%s "..imgs[distro].text.."os"..tc.normal.." : %s\n", imgs[distro][1], distro))
     io.write(string.format("%s "..imgs[distro].text.."kv"..tc.normal.." : %s\n", imgs[distro][2], get.kernel()))
-    io.write(string.format("%s "..imgs[distro].text.."up"..tc.normal.." : %s\n", imgs[distro][3], days.."d "..hours.."h "..minutes.."m"))
-    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], wlanip or ethip))
+    io.write(string.format("%s "..imgs[distro].text.."up"..tc.normal.." : %dd %dh %dm\n", imgs[distro][3], get.days(), get.hours(), get.mins()))
+    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], get.wlan() or get.eth()))
     io.write(string.format("%s "..imgs[distro].text.."hn"..tc.normal.." : %s\n", imgs[distro][5], get.host()))
   else
     print("[FATAL ERROR]: Your OS, "..distro.." is not supported by leaf")
-    print("\nPlease submit an issue about this to include it, or pull request including the required distribution icon")
+    print("\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it, or pull request including the required distribution icon")
   end
   break
 end

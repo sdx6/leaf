@@ -24,16 +24,16 @@ Clone the repository
 # Dependencies
 Depending on your distribution of choice, install the required programs using one of these commands:
 ```
- # apt install make clang luajit2
+ $ sudo apt install make clang luajit2
 ```
 ```
- # pacman -S make clang luajit
+ $ sudo pacman -S make clang luajit
 ```
 ```
- # dnf install make clang luajit
+ $ sudo dnf install make clang luajit
 ```
 ```
- # zypper install make clang
+ $ sudo zypper install make clang
 ```
 ```nix
 environment.systemPackages = [

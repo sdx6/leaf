@@ -4,7 +4,7 @@
 
 #include "lualib.h"
 #include "lauxlib.h"
-#include "luajit.h"
+//#include "luajit.h"
 
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
@@ -12,6 +12,7 @@
 #include <sys/sysinfo.h>
 #include <linux/version.h>
 #include <unistd.h>
+#include <string.h>
 
 #define lua_main "/usr/lib/sdx6/leaf/main.lua" /* installed file path */
 #define lua_main_local "~/.local/share/sdx6/leaf/main.lua" /* local file path */
@@ -54,6 +55,71 @@
 //  ( _\|/_ )_/   '----------------------------------'
 
 // }}}
+// {{{ lua functions
+
+int getdays(lua_State* lua)
+{
+  struct sysinfo linuxinfo;
+  if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
+
+  lua_pushinteger(lua, linuxinfo.uptime / 86400);
+  return 1;
+}
+
+int gethours(lua_State* lua)
+{
+  struct sysinfo linuxinfo;
+  if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
+
+  int days = linuxinfo.uptime / 86400;
+  lua_pushinteger(lua, (linuxinfo.uptime / 3600) - (days * 24));
+  return 1;
+}
+
+int getmins(lua_State* lua)
+{
+  struct sysinfo linuxinfo;
+  if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
+
+  int days = linuxinfo.uptime / 86400;
+  int hours = (linuxinfo.uptime / 3600) - (days * 24);
+  lua_pushinteger(lua, (linuxinfo.uptime / 60) - (days * 1440) - (hours * 60));
+  return 1;
+}
+
+int getwlan(lua_State* lua)
+{
+  int fd;
+  struct ifreq ifr;
+  fd = socket(AF_INET, SOCK_DGRAM, 0);
+  ifr.ifr_addr.sa_family = AF_INET;
+  snprintf(ifr.ifr_name, IFNAMSIZ, "wlan0");
+  ioctl(fd, SIOCGIFADDR, &ifr);
+
+  char* wlan = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+  if (!strcmp(wlan, "0.0.0.0"))
+  lua_pushstring(lua, "na");
+  else lua_pushstring(lua, wlan);
+  return 1;
+}
+
+int geteth(lua_State* lua)
+{
+  int fd;
+  struct ifreq ifr;
+  fd = socket(AF_INET, SOCK_DGRAM, 0);
+  ifr.ifr_addr.sa_family = AF_INET;
+  snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
+  ioctl(fd, SIOCGIFADDR, &ifr);
+
+  char* eth = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+  if (!strcmp(eth, "0.0.0.0"))
+  lua_pushstring(lua, "na");
+  else lua_pushstring(lua, eth);
+  return 1;
+}
+
+// }}}
 // {{{ main
 
 int main(int argc, char* argv[])
@@ -61,45 +127,42 @@ int main(int argc, char* argv[])
   lua_State* lua = lua_open();
   luaL_openlibs(lua);
   
-  // {{{ ip
+  // {{{ expose lua functions
 
-  int fd;
-  struct ifreq ifr;
+  static const struct luaL_Reg lua_functions[] =
+  {
+    {
+      "days",
+      getdays,
+    },
+    {
+      "hours",
+      gethours,
+    },
+    {
+      "mins",
+      getmins,
+    },
+    {
+      "mins",
+      getmins,
+    },
+    {
+      "wlan",
+      getwlan,
+    },
+    {
+      "eth",
+      geteth,
+    },
+    {
+      NULL,
+      NULL,
+    },
+  };
+  luaL_register(lua, "get", lua_functions);
 
-  fd = socket(AF_INET, SOCK_DGRAM, 0);
-  ifr.ifr_addr.sa_family = AF_INET;
-  snprintf(ifr.ifr_name, IFNAMSIZ, "wlan0");
-  ioctl(fd, SIOCGIFADDR, &ifr);
-  lua_pushstring(lua, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-  lua_setglobal(lua, "wlanip");
-
-  fd = socket(AF_INET, SOCK_DGRAM, 0);
-  ifr.ifr_addr.sa_family = AF_INET;
-  snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
-  ioctl(fd, SIOCGIFADDR, &ifr);
-  lua_pushstring(lua, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-  lua_setglobal(lua, "ethip");
-
-  // }}}
-  // {{{ uptime
-
-  struct sysinfo linuxinfo;
-  if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
-
-  int days, hours, mins, x = 1;
-  lua_pushinteger(lua, linuxinfo.uptime);
-  lua_setglobal(lua, "uptime");
-  days = linuxinfo.uptime / 86400;
-  lua_pushinteger(lua, days);
-  lua_setglobal(lua, "days");
-  hours = (linuxinfo.uptime / 3600) - (days * 24);
-  lua_pushinteger(lua, hours);
-  lua_setglobal(lua, "hours");
-  mins = (linuxinfo.uptime / 60) - (days * 1440) - (hours * 60);
-  lua_pushinteger(lua, mins);
-  lua_setglobal(lua, "minutes");
-
-  // }}}
+  // }}} 
   // {{{ args
 
   lua_newtable(lua);
