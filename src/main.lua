@@ -199,9 +199,10 @@ imgs =
 -- }}}
 
 -- }}}
--- {{{ handle C functions 
+-- {{{ handle C exposure
 
 get = get or {}
+leafver = leafver or "na"
 
 -- }}}
 -- {{{ process arguments
@@ -210,6 +211,7 @@ os_release = "/etc/os-release"
 version = "/proc/version"
 hostname = "/etc/hostname"
 while true do
+  local dobreak
   args =
   {
     ["-os"] = function(i)
@@ -240,28 +242,30 @@ while true do
         "│   └── [STRING]         │ The path to your hostname file",
         "├── -o --override        │ Manually set the icon and os field",
         "│   └── [STRING]         │ The distribution ID",
-        "└── -h --help            │ Shows this screen!!",
+        "├── -h --help            │ Shows this screen!!",
+        "└── -v --version         │ Display leaf version",
         "",
         "Examples:",
         "    leaf -os /bedrock/etc/os-release │ Shows Bedrock instead of the current stratum",
         "",
       }
       for x = 1, #help do print(help[x]) end
+      dobreak = true
     end,
+
+    ["-v"] = function()
+      print("leaf v"..leafver)
+      dobreak = true
+    end
   }
   args["--os-release"] = args["-os"]
   args["--hostname"] = args["-hn"]
   args["--kernel-version"] = args["-kv"]
   args["--help"] = args["-h"]
-  local dobreak = false
+  args["--version"] = args["-v"]
   for i = 1, #arg do
-    if arg[i] ~= "-h" and arg[i] ~= "--help" then
-      if args[arg[i]] then
-        args[arg[i]](i)
-      end
-    else
-      args[arg[i]]()
-      dobreak = true
+    if args[arg[i]] then
+      args[arg[i]](i)
     end
   end
   if dobreak then break end
@@ -312,15 +316,16 @@ while true do
   -- {{{ display
 
   distro = distro or get.distro()
+  local eth, wlan = get.wifi()
 
   if imgs[distro] then
     io.write(string.format("%s "..imgs[distro].text.."os"..tc.normal.." : %s\n", imgs[distro][1], distro))
     io.write(string.format("%s "..imgs[distro].text.."kv"..tc.normal.." : %s\n", imgs[distro][2], get.kernel()))
     io.write(string.format("%s "..imgs[distro].text.."up"..tc.normal.." : %dd %dh %dm\n", imgs[distro][3], get.days(), get.hours(), get.mins()))
-    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], get.wlan() or get.eth()))
+    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], eth or wlan))
     io.write(string.format("%s "..imgs[distro].text.."hn"..tc.normal.." : %s\n", imgs[distro][5], get.host()))
   else
-    print("[FATAL ERROR]: Your OS, "..distro.." is not supported by leaf")
+    print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))
     print("\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it, or pull request including the required distribution icon")
   end
   break

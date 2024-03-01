@@ -2,9 +2,9 @@
 
 // {{{ include
 
-#include "lualib.h"
-#include "lauxlib.h"
-//#include "luajit.h"
+#include "include/lualib.h"
+#include "include/lauxlib.h"
+//#include "include/luajit.h"
 
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
@@ -14,8 +14,9 @@
 #include <unistd.h>
 #include <string.h>
 
-#define lua_main "/usr/lib/sdx6/leaf/main.lua" /* installed file path */
-#define lua_main_local "~/.local/share/sdx6/leaf/main.lua" /* local file path */
+#define LUA_MAIN "/usr/lib/sdx6/leaf/main.lua" /* installed file path */
+#define LUA_MAIN_LOCAL "~/.local/share/sdx6/leaf/main.lua" /* local file path */
+#define VERSION "1.0.0"
 
 // }}}
 // {{{ LICENSE
@@ -57,7 +58,7 @@
 // }}}
 // {{{ lua functions
 
-int getdays(lua_State* lua)
+static int getdays(lua_State* lua)
 {
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
@@ -66,7 +67,7 @@ int getdays(lua_State* lua)
   return 1;
 }
 
-int gethours(lua_State* lua)
+static int gethours(lua_State* lua)
 {
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
@@ -76,7 +77,7 @@ int gethours(lua_State* lua)
   return 1;
 }
 
-int getmins(lua_State* lua)
+static int getmins(lua_State* lua)
 {
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
@@ -87,37 +88,30 @@ int getmins(lua_State* lua)
   return 1;
 }
 
-int getwlan(lua_State* lua)
+static int getwifi(lua_State* lua)
 {
   int fd;
   struct ifreq ifr;
   fd = socket(AF_INET, SOCK_DGRAM, 0);
   ifr.ifr_addr.sa_family = AF_INET;
+
   snprintf(ifr.ifr_name, IFNAMSIZ, "wlan0");
   ioctl(fd, SIOCGIFADDR, &ifr);
-
-  char* wlan = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-  if (!strcmp(wlan, "0.0.0.0"))
-  lua_pushstring(lua, "na");
-  else lua_pushstring(lua, wlan);
-  return 1;
-}
-
-int geteth(lua_State* lua)
-{
-  int fd;
-  struct ifreq ifr;
-  fd = socket(AF_INET, SOCK_DGRAM, 0);
-  ifr.ifr_addr.sa_family = AF_INET;
-  snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
-  ioctl(fd, SIOCGIFADDR, &ifr);
-
   char* eth = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
   if (!strcmp(eth, "0.0.0.0"))
   lua_pushstring(lua, "na");
   else lua_pushstring(lua, eth);
-  return 1;
+
+  snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
+  ioctl(fd, SIOCGIFADDR, &ifr);
+  char* wlan = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+  if (!strcmp(wlan, "0.0.0.0"))
+  lua_pushstring(lua, "na");
+  else lua_pushstring(lua, wlan);
+
+  return 2;
 }
+
 
 // }}}
 // {{{ main
@@ -148,12 +142,8 @@ int main(int argc, char* argv[])
       getmins,
     },
     {
-      "wlan",
-      getwlan,
-    },
-    {
-      "eth",
-      geteth,
+      "wifi",
+      getwifi,
     },
     {
       NULL,
@@ -163,6 +153,12 @@ int main(int argc, char* argv[])
   luaL_register(lua, "get", lua_functions);
 
   // }}} 
+  // {{{ expose lua variables
+  
+  lua_pushstring(lua, VERSION);
+  lua_setglobal(lua, "leafver");
+
+  // }}}
   // {{{ args
 
   lua_newtable(lua);
@@ -181,9 +177,9 @@ int main(int argc, char* argv[])
     fprintf(stderr, "[FATAL ERROR]: Insufficient memory to open Lua...\n");
     return 1;
   }
-  if (luaL_dofile(lua, lua_main_local)) /* isnt installed locally? */
+  if (luaL_dofile(lua, LUA_MAIN_LOCAL)) /* isnt installed locally? */
   {
-    if (luaL_dofile(lua, lua_main)) /* doesnt exist at all??? */
+    if (luaL_dofile(lua, LUA_MAIN)) /* doesnt exist at all??? */
     {
       /* welp */
       fprintf(stderr, "[FATAL ERROR]: %s\n", lua_tostring(lua, -1));
