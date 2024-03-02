@@ -4,6 +4,7 @@
 
 #include "include/lualib.h"
 #include "include/lauxlib.h"
+#include "include/luaconf.h"
 //#include "include/luajit.h"
 
 #include <arpa/inet.h>
