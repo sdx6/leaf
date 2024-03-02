@@ -14,10 +14,9 @@
 #include <linux/version.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
-#define LUA_MAIN "/usr/lib/sdx6/leaf/main.lua" /* installed file path */
-#define LUA_MAIN_LOCAL "~/.local/share/sdx6/leaf/main.lua" /* local file path */
-#define VERSION "1.0.0"
+#define VERSION "1.1.5"
 
 // }}}
 // {{{ LICENSE
@@ -119,6 +118,9 @@ static int getwifi(lua_State* lua)
 
 int main(int argc, char* argv[])
 {
+  char* LUA_MAIN = "/usr/lib/sdx6/leaf/main.lua";
+  char* LUA_MAIN_LOCAL = strcat(getenv("HOME"), "/.local/share/sdx6/leaf/main.lua");
+
   lua_State* lua = lua_open();
   luaL_openlibs(lua);
   
