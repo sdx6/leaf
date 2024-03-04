@@ -193,7 +193,6 @@ imgs =
     tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.white,
   },
-
 }
 
 -- }}}
@@ -316,7 +315,7 @@ while true do
   -- {{{ display
 
   distro = distro or get.distro()
-  local eth, wlan = get.wifi()
+  eth, wlan = get.wifi()
 
   if imgs[distro] then
     io.write(string.format("%s "..imgs[distro].text.."os"..tc.normal.." : %s\n", imgs[distro][1], distro))

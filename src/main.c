@@ -8,8 +8,11 @@
 //#include "include/luajit.h"
 
 #include <arpa/inet.h>
+#include <sys/socket.h>
 #include <sys/ioctl.h>
+#include <netdb.h>
 #include <net/if.h>
+#include <ifaddrs.h>
 #include <sys/sysinfo.h>
 #include <linux/version.h>
 #include <unistd.h>
@@ -90,6 +93,11 @@ static int getmins(lua_State* lua)
 
 static int getwifi(lua_State* lua)
 {
+  /* this solution is buggy on some systems */
+  /* for some reason that im not aware of   */
+
+  /* if you know a fix, please make a PR <3 */
+
   int fd;
   struct ifreq ifr;
   fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -109,9 +117,36 @@ static int getwifi(lua_State* lua)
   lua_pushstring(lua, "na");
   else lua_pushstring(lua, wlan);
 
+  /* new solution, doesnt quite work, getting it done eventually */
+
+  /*
+  struct ifaddrs* ifa;
+  int f, s;
+  char h[NI_MAXHOST];
+  if (getifaddrs(&ifa) == -1)
+  {
+    perror("getifa");
+    exit(EXIT_FAILURE);
+  }
+  int r = 0;
+  for (ifa = ifa; ifa; ifa = ifa->ifa_next)
+  {
+    f = ifa->ifa_addr->sa_family;
+    if (f == AF_INET)
+    {
+      s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), h, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+      if (s != 0)
+      {
+        lua_pushstring(lua, h);
+        printf("%s\n",h);
+        r++;
+      }
+    }
+  }
+  */
+
   return 2;
 }
-
 
 // }}}
 // {{{ main
