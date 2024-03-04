@@ -202,6 +202,8 @@ imgs =
 
 get = get or {}
 leafver = leafver or "na"
+wlan = wlan or "na"
+eth = eth or "na"
 
 -- }}}
 -- {{{ process arguments
@@ -315,13 +317,12 @@ while true do
   -- {{{ display
 
   distro = distro or get.distro()
-  eth, wlan = get.wifi()
 
   if imgs[distro] then
     io.write(string.format("%s "..imgs[distro].text.."os"..tc.normal.." : %s\n", imgs[distro][1], distro))
     io.write(string.format("%s "..imgs[distro].text.."kv"..tc.normal.." : %s\n", imgs[distro][2], get.kernel()))
     io.write(string.format("%s "..imgs[distro].text.."up"..tc.normal.." : %dd %dh %dm\n", imgs[distro][3], get.days(), get.hours(), get.mins()))
-    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], eth or wlan))
+    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], wlan))
     io.write(string.format("%s "..imgs[distro].text.."hn"..tc.normal.." : %s\n", imgs[distro][5], get.host()))
   else
     print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))

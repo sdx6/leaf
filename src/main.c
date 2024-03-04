@@ -91,13 +91,9 @@ static int getmins(lua_State* lua)
   return 1;
 }
 
+/*
 static int getwifi(lua_State* lua)
 {
-  /* this solution is buggy on some systems */
-  /* for some reason that im not aware of   */
-
-  /* if you know a fix, please make a PR <3 */
-
   int fd;
   struct ifreq ifr;
   fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -113,13 +109,14 @@ static int getwifi(lua_State* lua)
   snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
   ioctl(fd, SIOCGIFADDR, &ifr);
   char* wlan = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+
   if (!strcmp(wlan, "0.0.0.0"))
   lua_pushstring(lua, "na");
   else lua_pushstring(lua, wlan);
 
-  /* new solution, doesnt quite work, getting it done eventually */
-
-  /*
+  return 2;
+*/
+/*
   struct ifaddrs* ifa;
   int f, s;
   char h[NI_MAXHOST];
@@ -143,10 +140,10 @@ static int getwifi(lua_State* lua)
       }
     }
   }
-  */
 
   return 2;
 }
+*/
 
 // }}}
 // {{{ main
@@ -176,14 +173,6 @@ int main(int argc, char* argv[])
       getmins,
     },
     {
-      "mins",
-      getmins,
-    },
-    {
-      "wifi",
-      getwifi,
-    },
-    {
       NULL,
       NULL,
     },
@@ -195,6 +184,27 @@ int main(int argc, char* argv[])
   
   lua_pushstring(lua, VERSION);
   lua_setglobal(lua, "leafver");
+
+  int n;
+  struct ifreq ifrw;
+  struct ifreq ifre;
+  n = socket(AF_INET, SOCK_DGRAM, 0);
+  ifrw.ifr_addr.sa_family = AF_INET;
+  strncpy(ifrw.ifr_name, "wlan0", IFNAMSIZ - 1);
+  ioctl(n, SIOCGIFADDR, &ifrw);
+  close(n);
+  char* wlan = inet_ntoa(((struct sockaddr_in*)&ifrw.ifr_addr)->sin_addr);
+  lua_pushstring(lua, wlan);
+  lua_setglobal(lua, "wlan");
+
+  n = socket(AF_INET, SOCK_DGRAM, 0);
+  ifre.ifr_addr.sa_family = AF_INET;
+  strncpy(ifrw.ifr_name, "eth0", IFNAMSIZ - 1);
+  ioctl(n, SIOCGIFADDR, &ifrw);
+  close(n);
+  char* eth = inet_ntoa(((struct sockaddr_in*)&ifrw.ifr_addr)->sin_addr);
+  lua_pushstring(lua, eth);
+  lua_setglobal(lua, "eth");
 
   // }}}
   // {{{ args
