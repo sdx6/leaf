@@ -91,6 +91,8 @@ static int getmins(lua_State* lua)
   return 1;
 }
 
+/* old solutions that suck */
+
 /*
 static int getwifi(lua_State* lua)
 {
@@ -145,6 +147,24 @@ static int getwifi(lua_State* lua)
 }
 */
 
+static int getip(lua_State* lua)
+{
+  const char* d = luaL_checkstring(lua, -1);
+
+  int n;
+  struct ifreq i;
+  n = socket(AF_INET, SOCK_DGRAM, 0);
+  i.ifr_addr.sa_family = AF_INET;
+  strncpy(i.ifr_name, d, IFNAMSIZ - 1);
+  ioctl(n, SIOCGIFADDR, &i);
+  close(n);
+  char* r = inet_ntoa(((struct sockaddr_in*)&i.ifr_addr)->sin_addr);
+
+  if (strcmp(r, "0.0.0.0") == 0) lua_pushnil(lua);
+  else lua_pushstring(lua, r);
+  return 1;
+}
+
 // }}}
 // {{{ main
 
@@ -173,6 +193,10 @@ int main(int argc, char* argv[])
       getmins,
     },
     {
+      "ip",
+      getip,
+    },
+    {
       NULL,
       NULL,
     },
@@ -184,27 +208,6 @@ int main(int argc, char* argv[])
   
   lua_pushstring(lua, VERSION);
   lua_setglobal(lua, "leafver");
-
-  int n;
-  struct ifreq ifrw;
-  struct ifreq ifre;
-  n = socket(AF_INET, SOCK_DGRAM, 0);
-  ifrw.ifr_addr.sa_family = AF_INET;
-  strncpy(ifrw.ifr_name, "wlan0", IFNAMSIZ - 1);
-  ioctl(n, SIOCGIFADDR, &ifrw);
-  close(n);
-  char* wlan = inet_ntoa(((struct sockaddr_in*)&ifrw.ifr_addr)->sin_addr);
-  lua_pushstring(lua, wlan);
-  lua_setglobal(lua, "wlan");
-
-  n = socket(AF_INET, SOCK_DGRAM, 0);
-  ifre.ifr_addr.sa_family = AF_INET;
-  strncpy(ifrw.ifr_name, "eth0", IFNAMSIZ - 1);
-  ioctl(n, SIOCGIFADDR, &ifrw);
-  close(n);
-  char* eth = inet_ntoa(((struct sockaddr_in*)&ifrw.ifr_addr)->sin_addr);
-  lua_pushstring(lua, eth);
-  lua_setglobal(lua, "eth");
 
   // }}}
   // {{{ args

@@ -318,11 +318,29 @@ while true do
 
   distro = distro or get.distro()
 
+  local ip = "na"
+  local d = {}
+  for l in io.lines("/proc/net/dev") do
+    table.insert(d, l)
+  end
+  for i = 1, #d do
+    d[i] = string.split(d[i])
+  end
+  for i = 1, #d do
+    local dev = d[i][1]:sub(1, -2)
+    if dev ~= "lo" then
+      local lip = get.ip(dev)
+      if lip then
+        ip = lip
+      end
+    end
+  end
+
   if imgs[distro] then
     io.write(string.format("%s "..imgs[distro].text.."os"..tc.normal.." : %s\n", imgs[distro][1], distro))
     io.write(string.format("%s "..imgs[distro].text.."kv"..tc.normal.." : %s\n", imgs[distro][2], get.kernel()))
     io.write(string.format("%s "..imgs[distro].text.."up"..tc.normal.." : %dd %dh %dm\n", imgs[distro][3], get.days(), get.hours(), get.mins()))
-    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], wlan))
+    io.write(string.format("%s "..imgs[distro].text.."ip"..tc.normal.." : %s\n", imgs[distro][4], ip))
     io.write(string.format("%s "..imgs[distro].text.."hn"..tc.normal.." : %s\n", imgs[distro][5], get.host()))
   else
     print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))
