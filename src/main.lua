@@ -39,7 +39,7 @@
 --  ( _\|/_ )_/   '----------------------------------'
 
 -- }}}
---{{{ require("stdex")
+-- {{{ require("stdex")
 
 function string.tokenize(s)
   local t = {}
@@ -56,7 +56,7 @@ function string.split(s)
   return t
 end
 
---}}}
+-- }}}
 
 -- {{{ variables
 
@@ -168,11 +168,11 @@ imgs =
   },
   ["manjaro"] =
   {
-    tc.bg.black..tc.fg.green..[[ ,___,,_, ]]..tc.normal,
-    tc.bg.black..tc.fg.green..[[ | ,_|| | ]]..tc.normal,
-    tc.bg.black..tc.fg.green..[[ | |  | | ]]..tc.normal,
-    tc.bg.black..tc.fg.green..[[ |_|__|_| ]]..tc.normal,
-    tc.bg.black..tc.fg.green..[[          ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[ ,___,,_, ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[ | ,_|| | ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[ | |  | | ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[ |_|__|_| ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.green,
   },
   ["nixos"] =
@@ -184,6 +184,24 @@ imgs =
     tc.bg.black..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.cyan,
   },
+  ["opensuse-leap"] =
+  {
+    tc.bg.green..tc.fg.black..[[    ,___  ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[   _| ()\ ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[ /    --' ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[ \ __^/   ]]..tc.normal,
+    tc.bg.green..tc.fg.black..[[          ]]..tc.normal,
+    text = tc.fg.green,
+  },
+  ["opensuse-tumbleweed"] =
+  {
+    tc.bg.blue..tc.fg.black..[[  _    _  ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[ / \  / \ ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[ |  )(  | ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[ \_/  \_/ ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    text = tc.fg.blue,
+  },
   [""] =
   {
     tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
@@ -193,6 +211,7 @@ imgs =
     tc.bg.white..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.white,
   },
+  -- ▀
 }
 
 -- }}}
@@ -290,7 +309,7 @@ while true do
           table.remove(s, 1)
           table.remove(s, #s)
         end
-        return table.concat(s)
+        return string.lower(table.concat(s))
       end
     end
   end
@@ -326,12 +345,15 @@ while true do
   for i = 1, #d do
     d[i] = string.split(d[i])
   end
+  table.remove(d, 1)
+  table.remove(d, 1)
   for i = 1, #d do
     local dev = d[i][1]:sub(1, -2)
-    if dev ~= "lo" then
+    if dev ~= "lo" and tonumber(d[i][2]) > 0 then
       local lip = get.ip(dev)
       if lip then
         ip = lip
+        break
       end
     end
   end

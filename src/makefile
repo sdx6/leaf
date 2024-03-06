@@ -31,3 +31,11 @@ local:
 	luajit -b main.lua ~/.local/share/sdx6/$(output)/main.lua
 
 ###################################################
+
+test:
+	mkdir -p /usr/lib/sdx6/$(output)/
+	luajit -b main.lua /usr/lib/sdx6/$(output)/main.lua
+	mkdir -p /usr/local/bin/
+	$(compiler) $(options) -o /usr/local/bin/$(output) $(sources) $(linker)
+
+###################################################
