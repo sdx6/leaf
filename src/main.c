@@ -91,62 +91,6 @@ static int getmins(lua_State* lua)
   return 1;
 }
 
-/* old solutions that suck */
-
-/*
-static int getwifi(lua_State* lua)
-{
-  int fd;
-  struct ifreq ifr;
-  fd = socket(AF_INET, SOCK_DGRAM, 0);
-  ifr.ifr_addr.sa_family = AF_INET;
-
-  snprintf(ifr.ifr_name, IFNAMSIZ, "wlan0");
-  ioctl(fd, SIOCGIFADDR, &ifr);
-  char* eth = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-  if (!strcmp(eth, "0.0.0.0"))
-  lua_pushstring(lua, "na");
-  else lua_pushstring(lua, eth);
-
-  snprintf(ifr.ifr_name, IFNAMSIZ, "eth0");
-  ioctl(fd, SIOCGIFADDR, &ifr);
-  char* wlan = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-
-  if (!strcmp(wlan, "0.0.0.0"))
-  lua_pushstring(lua, "na");
-  else lua_pushstring(lua, wlan);
-
-  return 2;
-*/
-/*
-  struct ifaddrs* ifa;
-  int f, s;
-  char h[NI_MAXHOST];
-  if (getifaddrs(&ifa) == -1)
-  {
-    perror("getifa");
-    exit(EXIT_FAILURE);
-  }
-  int r = 0;
-  for (ifa = ifa; ifa; ifa = ifa->ifa_next)
-  {
-    f = ifa->ifa_addr->sa_family;
-    if (f == AF_INET)
-    {
-      s = getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), h, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-      if (s != 0)
-      {
-        lua_pushstring(lua, h);
-        printf("%s\n",h);
-        r++;
-      }
-    }
-  }
-
-  return 2;
-}
-*/
-
 static int getip(lua_State* lua)
 {
   const char* d = luaL_checkstring(lua, -1);
@@ -170,8 +114,8 @@ static int getip(lua_State* lua)
 
 int main(int argc, char* argv[])
 {
-  char* LUA_MAIN = "/usr/lib/sdx6/leaf/main.lua";
-  char* LUA_MAIN_LOCAL = strcat(getenv("HOME"), "/.local/share/sdx6/leaf/main.lua");
+  const char* LUA_MAIN = "/usr/lib/sdx6/leaf/main.lua";
+  const char* LUA_MAIN_LOCAL = strcat(getenv("HOME"), "/.local/share/sdx6/leaf/main.lua");
 
   lua_State* lua = lua_open();
   luaL_openlibs(lua);

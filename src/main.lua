@@ -48,6 +48,7 @@ function string.tokenize(s)
   end
   return t
 end
+
 function string.split(s)
   local t = {}
   for i in string.gmatch(s, "%S+") do
@@ -150,11 +151,11 @@ imgs =
   },
   ["fedora"] =
   {
-    tc.bg.blue..tc.fg.black..[[   ____   ]]..tc.normal,
-    tc.bg.blue..tc.fg.black..[[  /  ]]..tc.fg.white..[[_]]..tc.fg.black..[[ \  ]]..tc.normal,
-    tc.bg.blue..tc.fg.black..[[ | ]]..tc.fg.white..[[C/-]]..tc.fg.black..[[  | ]]..tc.normal,
-    tc.bg.blue..tc.fg.black..[[ |_____/  ]]..tc.normal,
-    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[   ____   ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[  /  ]]..tc.fg.white..[[_]]..tc.fg.blue..[[ \  ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[ | ]]..tc.fg.white..[[C/-]]..tc.fg.blue..[[  | ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[ |_____/  ]]..tc.normal,
+    tc.bg.black..tc.fg.blue..[[          ]]..tc.normal,
     text = tc.fg.blue,
   },
   ["alpine"] =
@@ -199,6 +200,33 @@ imgs =
     tc.bg.blue..tc.fg.black..[[ / \  / \ ]]..tc.normal,
     tc.bg.blue..tc.fg.black..[[ |  )(  | ]]..tc.normal,
     tc.bg.blue..tc.fg.black..[[ \_/  \_/ ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    text = tc.fg.blue,
+  },
+  ["ubuntu"] =
+  {
+    tc.bg.yellow..tc.fg.black..[[    __    ]]..tc.normal,
+    tc.bg.yellow..tc.fg.black..[[ () -- () ]]..tc.normal,
+    tc.bg.yellow..tc.fg.black..[[ | |  | | ]]..tc.normal,
+    tc.bg.yellow..tc.fg.black..[[  \ -- /  ]]..tc.normal,
+    tc.bg.yellow..tc.fg.black..[[    ''    ]]..tc.normal,
+    text = tc.fg.yellow,
+  },
+  ["slackware"] =
+  {
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[   ,-=|   ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[   '==,   ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[   |=-'   ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    text = tc.fg.blue,
+  },
+  ["arco"] =
+  {
+    tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[    /\    ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[   //\\   ]]..tc.normal,
+    tc.bg.blue..tc.fg.black..[[  // -=\  ]]..tc.normal,
     tc.bg.blue..tc.fg.black..[[          ]]..tc.normal,
     text = tc.fg.blue,
   },
