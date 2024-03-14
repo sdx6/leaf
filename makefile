@@ -1,13 +1,13 @@
 ###################################################   
 
 compiler = clang
-options  =
+options  = 
 linker   = -lluajit-5.1
 output   = leaf
-sources  = main.c
+sources  = ./src/main.c
 
 $(output): $(sources)
-	$(compiler) $(options) -o $(output) $(sources) $(linker)
+	$(compiler) -o ./src/$(output) $(sources) $(options) $(linker)
 
 ###################################################   
 
@@ -18,23 +18,23 @@ clean:
 
 install:
 	mkdir -p /usr/lib/sdx6/$(output)/
-	luajit -b main.lua /usr/lib/sdx6/$(output)/main.lua
+	luajit -b ./src/main.lua /usr/lib/sdx6/$(output)/main.lua
 	mkdir -p /usr/local/bin/
-	cp $(output) /usr/local/bin/
+	cp ./src/$(output) /usr/local/bin/
 
 ###################################################
 
 local:
 	mkdir -p ~/.local/bin/
-	cp $(output) ~/.local/bin/
+	cp ./src/$(output) ~/.local/bin/
 	mkdir -p ~/.local/share/sdx6/$(output)/
-	luajit -b main.lua ~/.local/share/sdx6/$(output)/main.lua
+	luajit -b ./src/main.lua ~/.local/share/sdx6/$(output)/main.lua
 
 ###################################################
 
 test:
 	mkdir -p /usr/lib/sdx6/$(output)/
-	luajit -b main.lua /usr/lib/sdx6/$(output)/main.lua
+	luajit -b ./src/main.lua /usr/lib/sdx6/$(output)/main.lua
 	mkdir -p /usr/local/bin/
 	$(compiler) $(options) -o /usr/local/bin/$(output) $(sources) $(linker)
 
