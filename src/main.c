@@ -4,22 +4,16 @@
 
 #include "include/lualib.h"
 #include "include/lauxlib.h"
-#include "include/luaconf.h"
-//#include "include/luajit.h"
 
 #include <arpa/inet.h>
-#include <sys/socket.h>
 #include <sys/ioctl.h>
-#include <netdb.h>
 #include <net/if.h>
-#include <ifaddrs.h>
 #include <sys/sysinfo.h>
-#include <linux/version.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 
-#define VERSION "1.1.5"
+#define VERSION "1.3.1"
 
 // }}}
 // {{{ LICENSE
