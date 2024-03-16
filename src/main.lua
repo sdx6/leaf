@@ -299,8 +299,6 @@ local construct =
 
 get = get or {}
 leafver = leafver or "na"
-wlan = wlan or "na"
-eth = eth or "na"
 
 -- }}}
 -- {{{ process arguments
@@ -389,14 +387,13 @@ while true do
       if d[i]:sub(1, 3) == "ID=" then
         local s = d[i]
         s = tokenize(s)
-        for _ = 1, 3 do
-          table.remove(s, 1)
+        if s[4] == "\"" and s[#s] == "\"" then
+          return string.lower(table.concat(s, "", 5, #s-1))
         end
-        if s[1] == "\"" and s[#s] == "\"" then
-          table.remove(s, 1)
-          table.remove(s, #s)
+        if s[5] == "'" and s[#s] == "'" then
+          return string.lower(table.concat(s, "", 5, #s-1))
         end
-        return string.lower(table.concat(s))
+        return string.lower(table.concat(s, "", 4, #s))
       end
     end
   end
