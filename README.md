@@ -1,6 +1,6 @@
 # leaf - LEAh's Fetch
-//Preston'$ note , PorT/*£*/ 2 C#
-// option ? change leaf name to porte de lune : 0; 
+///*Preston'$ note , PorT/*£*/ 2 C#
+// option ? change leaf name to porte de lune : 0; */
 A minimal, blazingly fast fetch program for Linux
 
 Shows only the useful things, and does them pretty well
