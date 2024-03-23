@@ -1,5 +1,4 @@
-###################################################   
-
+###################################################
 compiler = clang
 options  = 
 linker   = -lluajit-5.1
@@ -21,6 +20,8 @@ install:
 	luajit -b ./src/main.lua /usr/lib/sdx6/$(output)/main.lua
 	mkdir -p /usr/local/bin/
 	cp ./src/$(output) /usr/local/bin/
+	mkdir -p /etc/xdg/sdx6/$(output)/
+	cp ./xdg/config.lua /etc/xdg/sdx6/$(output)/
 
 ###################################################
 

@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 // }}}
 // {{{ define
@@ -60,7 +61,7 @@
 // }}}
 // {{{ lua functions
 
-static int getdays(lua_State* lua)
+static int lua_getdays(lua_State* lua)
 {
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
@@ -69,7 +70,7 @@ static int getdays(lua_State* lua)
   return 1;
 }
 
-static int gethours(lua_State* lua)
+static int lua_gethours(lua_State* lua)
 {
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
@@ -79,7 +80,7 @@ static int gethours(lua_State* lua)
   return 1;
 }
 
-static int getmins(lua_State* lua)
+static int lua_getmins(lua_State* lua)
 {
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
@@ -90,7 +91,7 @@ static int getmins(lua_State* lua)
   return 1;
 }
 
-static int getip(lua_State* lua)
+static int lua_getip(lua_State* lua)
 {
   const char* d = luaL_checkstring(lua, -1);
 
@@ -107,6 +108,48 @@ static int getip(lua_State* lua)
   else lua_pushstring(lua, r);
   return 1;
 }
+
+static int lua_access(lua_State* lua)
+{
+  const char* s = luaL_checkstring(lua, -1);
+  if (access(s, F_OK)) lua_pushboolean(lua, 0);
+  else lua_pushboolean(lua, 1);
+  return 1;
+}
+
+/*
+static int lua_diritems(lua_State* lua)
+{
+  const char* d = luaL_checkstring(lua, -1);
+
+  struct dirent *ep;
+  DIR *dp = opendir(d);
+  char* dirs[] = {0};
+  int nt;
+  if (dp != NULL)
+  {
+    for (int i = 0; (ep = readdir(dp)) != NULL; i++)
+    {
+      dirs[i] = ep->d_name;
+      nt = i;
+    }
+    dirs[nt+1] = "\0";
+    (void) closedir (dp);
+  }
+  else
+  {
+    lua_pushnil(lua);
+    return 1;
+  }
+  lua_newtable(lua);
+    for (int i = 0; i < nt; i++)
+    {
+      lua_pushstring(lua, dirs[i]);
+    }
+  lua_settable(lua, -2);
+  return 1;
+}
+*/
 
 // }}}
 
@@ -143,20 +186,30 @@ int main(int argc, char* argv[])
   {
     {
       "days",
-      getdays,
+      lua_getdays,
     },
     {
       "hours",
-      gethours,
+      lua_gethours,
     },
     {
       "mins",
-      getmins,
+      lua_getmins,
     },
     {
       "ip",
-      getip,
+      lua_getip,
     },
+    {
+      "access",
+      lua_access,
+    },
+    /*
+    {
+      "diritems",
+      lua_diritems,
+    },
+    */
     {
       NULL,
       NULL,

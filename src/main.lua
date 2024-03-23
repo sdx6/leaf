@@ -34,8 +34,8 @@
 --  '-_   _------------------------------------------'
 --      V         ,----------------------------------,
 --   /\ _ /\     / The Software IS NOT INTENDED to    |
--- =( > w < )=_ <  run on OSX OR Windows!!!           |
---   )  v  (_/ | \ Tested ONLY on Linux, FOR Linux!!! |
+-- =( > w < )=_ <  run on OSX, any BSD, or Windows.   |
+--   )  v  (_/ | \ Tested only on Linux, FOR Linux!!! |
 --  ( _\|/_ )_/   '----------------------------------'
 
 -- }}}
@@ -301,12 +301,57 @@ get = get or {}
 leafver = leafver or "na"
 
 -- }}}
+-- {{{ the fetching
+
+os_release = "/etc/os-release"
+version = "/proc/version"
+hostname = "/etc/hostname"
+separator = "│"
+
+get.distro = function(osr)
+  local d = {}
+  for l in io.lines(osr) do
+    table.insert(d, l)
+  end
+  for i = 1, #d do
+    if d[i]:sub(1, 3) == "ID=" then
+      local s = d[i]
+      s = tokenize(s)
+      if s[4] == "\"" and s[#s] == "\"" then
+        return string.lower(table.concat(s, "", 5, #s-1))
+      end
+      if s[5] == "'" and s[#s] == "'" then
+        return string.lower(table.concat(s, "", 5, #s-1))
+      end
+      return string.lower(table.concat(s, "", 4, #s))
+    end
+  end
+end
+
+get.kernel = function(kv)
+  local k = {}
+  for l in io.lines(kv) do
+    table.insert(k, l)
+  end
+  k = split(table.concat(k, " "))
+  return k[3]
+end
+
+get.host = function(hn)
+  local h = {}
+  for l in io.lines(hn) do
+    table.insert(h, l)
+  end
+  return h[1]
+end
+
+get.bat = function()
+
+end
+
+-- }}}
 -- {{{ process arguments
 
-local os_release = "/etc/os-release"
-local version = "/proc/version"
-local hostname = "/etc/hostname"
-local separator = "│"
 while true do
   if #arg > 0 then
     local dobreak
@@ -376,51 +421,11 @@ while true do
   end
 
   -- }}}
-  -- {{{ the fetching
-
-  get.distro = function()
-    local d = {}
-    for l in io.lines(os_release) do
-      table.insert(d, l)
-    end
-    for i = 1, #d do
-      if d[i]:sub(1, 3) == "ID=" then
-        local s = d[i]
-        s = tokenize(s)
-        if s[4] == "\"" and s[#s] == "\"" then
-          return string.lower(table.concat(s, "", 5, #s-1))
-        end
-        if s[5] == "'" and s[#s] == "'" then
-          return string.lower(table.concat(s, "", 5, #s-1))
-        end
-        return string.lower(table.concat(s, "", 4, #s))
-      end
-    end
-  end
-
-  get.kernel = function()
-    local k = {}
-    for l in io.lines(version) do
-      table.insert(k, l)
-    end
-    k = split(table.concat(k, " "))
-    return k[3]
-  end
-
-  get.host = function()
-    local h = {}
-    for l in io.lines(hostname) do
-      table.insert(h, l)
-    end
-    return h[1]
-  end
-
-  -- }}}
 
   -- {{{ display
 
-  local distro = distro or get.distro()
-  local icon = construct[string.sub(distro,1,1)]()
+  distro = distro or get.distro(os_release)
+  icon = construct[string.sub(distro,1,1)]()
 
   local ip = "na"
   local d = {}
@@ -445,11 +450,23 @@ while true do
 
   if icon[distro] then
     icon = icon[distro]
-    io.write(string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro))
-    io.write(string.format("%s "..icon.text.."kv"..tc.normal.." "..separator.." %s\n", icon[2]..tc.normal, get.kernel()))
-    io.write(string.format("%s "..icon.text.."up"..tc.normal.." "..separator.." %dd %dh %dm\n", icon[3]..tc.normal, get.days(), get.hours(), get.mins()))
-    io.write(string.format("%s "..icon.text.."ip"..tc.normal.." "..separator.." %s\n", icon[4]..tc.normal, ip))
-    io.write(string.format("%s "..icon.text.."hn"..tc.normal.." "..separator.." %s\n", icon[5]..tc.normal, get.host()))
+    if get.access(os.getenv("HOME").."/.config/sdx6/leaf/config.lua") then
+      conf = dofile(os.getenv("HOME").."/.config/sdx6/leaf/config.lua")
+      if conf then
+        conf(get, ip, separator, distro, icon, tc, version, hostname, os_release)
+      end
+    end
+    display = display or
+    {
+      string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro),
+      string.format("%s "..icon.text.."kv"..tc.normal.." "..separator.." %s\n", icon[2]..tc.normal, get.kernel(version)),
+      string.format("%s "..icon.text.."up"..tc.normal.." "..separator.." %dd %dh %dm\n", icon[3]..tc.normal, get.days(), get.hours(), get.mins()),
+      string.format("%s "..icon.text.."ip"..tc.normal.." "..separator.." %s\n", icon[4]..tc.normal, ip),
+      string.format("%s "..icon.text.."hn"..tc.normal.." "..separator.." %s\n", icon[5]..tc.normal, get.host(hostname)),
+    }
+    for i = 1, #display do
+      io.write(display[i])
+    end
   else
     print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))
     print("\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it, or pull request including the required distribution icon")
@@ -457,4 +474,4 @@ while true do
   break
 end
 
-  -- }}}
+-- }}}
