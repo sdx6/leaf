@@ -141,6 +141,20 @@ local construct =
       },
     }
   end,
+  ["c"] = function()
+    return
+    {
+      ["chimera"] =
+      {
+        tc.bg.pink..tc.fg.black..[[ ,__,     ]],
+        tc.bg.pink..tc.fg.black..[[ |  |     ]],
+        tc.bg.pink..tc.fg.black..[[ ]=[()--, ]],
+        tc.bg.pink..tc.fg.black..[[ |__||__| ]],
+        tc.bg.pink..tc.fg.black..[[          ]],
+        text = tc.fg.pink,
+      }
+    }
+  end,
   ["d"] = function()
     return
     {
@@ -346,7 +360,11 @@ get.host = function(hn)
 end
 
 get.bat = function()
-
+  if get.access("/sys/class/power_supply/BAT0/capacity") then
+    local b = io.open("/sys/class/power_supply/BAT0/capacity", "r")
+    return tonumber(b).."%" or "na"
+  end
+  return "na"
 end
 
 -- }}}
@@ -424,9 +442,6 @@ while true do
 
   -- {{{ display
 
-  distro = distro or get.distro(os_release)
-  icon = construct[string.sub(distro,1,1)]()
-
   local ip = "na"
   local d = {}
   for l in io.lines("/proc/net/dev") do
@@ -448,14 +463,16 @@ while true do
     end
   end
 
-  if icon[distro] then
-    icon = icon[distro]
+  distro = distro or get.distro(os_release)
+  if construct[string.sub(distro,1,1)]()[distro] then
+    icon = construct[string.sub(distro,1,1)]()[distro]
     if get.access(os.getenv("HOME").."/.config/sdx6/leaf/config.lua") then
       conf = dofile(os.getenv("HOME").."/.config/sdx6/leaf/config.lua")
       if conf then
-        conf(get, ip, separator, distro, icon, tc, version, hostname, os_release)
+        conf(get, ip, separator, distro, icon, tc, version, hostname)
       end
     end
+    icon = construct[string.sub(get.distro(os_release),1,1)]()[get.distro(os_release)]
     display = display or
     {
       string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro),

@@ -17,11 +17,6 @@ I made this out of dissatisfaction with fetch scripts, either being way too slow
 
 ![](2.png)
 
-![](3.png)
-
-![](4.png)
-
-
 # Contributing
 
 Contributions to actual code is not really needed, all bases have been covered as far as necessary quick-lookup informationn
@@ -161,3 +156,12 @@ Optionally, install locally instead of system (~/.local/bin/)
 ```
  $ make local
 ```
+
+
+# Configuration
+
+The default configuration file (once `# make install` is run) is located in /etc/xdg/sdx6/leaf/
+
+`leaf` looks for its configuration file in a the same space, ~/.config/sdx6/leaf/config.lua
+
+The documentation for configuration is written there

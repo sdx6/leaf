@@ -8,15 +8,15 @@
 
 functions:
 
-  number get.days():
+  number get.days(nil):
     returns:
       the days uptime
 
-  number get.hours():
+  number get.hours(nil):
     returns:
       the hours uptime
 
-  number get.mins():
+  number get.mins(nil):
     returns:
       the mins uptime
 
@@ -33,6 +33,12 @@ functions:
       true if the file exists
       false if the file does not exist
 
+  table get.dir(string:directory):
+    directory:
+      directory to search
+    returns:
+      all items inside of the specified directory
+
   string get.distro(string:os_release):
     os_release:
       the full path to the os-release file
@@ -44,6 +50,11 @@ functions:
       full path to Linux version file
     returns:
       kernel version (ex: "6.9.0-amd64")
+
+  string get.bat(nil)
+    returns:
+      percentage battery level of BAT0, if there is a connected battery
+      "na" if there is no connected battery
 
 variables:
 

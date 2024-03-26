@@ -117,14 +117,13 @@ static int lua_access(lua_State* lua)
   return 1;
 }
 
-/*
-static int lua_diritems(lua_State* lua)
+static int lua_dir(lua_State* lua)
 {
   const char* d = luaL_checkstring(lua, -1);
 
-  struct dirent *ep;
-  DIR *dp = opendir(d);
-  char* dirs[] = {0};
+  struct dirent* ep;
+  DIR* dp = opendir(d);
+  char* dirs[256];
   int nt;
   if (dp != NULL)
   {
@@ -133,23 +132,22 @@ static int lua_diritems(lua_State* lua)
       dirs[i] = ep->d_name;
       nt = i;
     }
-    dirs[nt+1] = "\0";
     (void) closedir (dp);
+    lua_newtable(lua);
+      for (int i = 0; i < nt; i++)
+      {
+        lua_pushinteger(lua, i+1);
+        lua_pushstring(lua, dirs[i]);
+        lua_settable(lua, -3);
+      }
   }
   else
   {
     lua_pushnil(lua);
     return 1;
   }
-  lua_newtable(lua);
-    for (int i = 0; i < nt; i++)
-    {
-      lua_pushstring(lua, dirs[i]);
-    }
-  lua_settable(lua, -2);
   return 1;
 }
-*/
 
 // }}}
 
@@ -204,12 +202,10 @@ int main(int argc, char* argv[])
       "access",
       lua_access,
     },
-    /*
     {
-      "diritems",
-      lua_diritems,
+      "dir",
+      lua_dir,
     },
-    */
     {
       NULL,
       NULL,
