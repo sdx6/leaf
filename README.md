@@ -28,7 +28,7 @@ If your distribution is not supported by `leaf`, and you want to make it support
   
   ### Where to?
 
-  In `variables` > `icons` of /src/main.lua, there is an `imgs` table that holds the icons for every distribution that `leaf` supports
+  In `variables` > `icons` of /src/main.lua, there is a `construct` table that holds the icons for every distribution that `leaf` supports
 
   *(Code is best viewed in `vim`)*
 
@@ -51,7 +51,9 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   The ID here for my Arch Linux stratum is "arch", under the "ID" field
 
-  Between the `[""]` element, and the element above it, create a new dictionary element, with the distribution ID as the index
+  Take the first letter of the distribution ID, and create a table with that letter as the key, if it doesn't exist already
+
+  Inside of that table, make another table with the distribution ID as the key
 
   *(This is not a Lua tutorial)*
 
@@ -74,6 +76,7 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   > Examples of this are the Void Linux and NixOS icons
 
+
   - Use a consistent set of characters, and test them on different fonts to see how they look
 
   - DO NOT fill with hashtags (or fill in general), if you need a fill color, it's probably better off as a background color
@@ -88,7 +91,6 @@ If your distribution is not supported by `leaf`, and you want to make it support
   | |      | |
   | |______| |
   |__________|
-
   ```
   - The icon should rest comfortably in the space that the inner box of this diagram takes up, without peeking out any side, and it should be mostly centered
 

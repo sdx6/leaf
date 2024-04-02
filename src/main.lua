@@ -260,6 +260,15 @@ local construct =
         tc.bg.blue..tc.fg.black..[[          ]],
         text = tc.fg.blue,
       },
+      ["osx"] =
+      {
+        tc.bg.black..tc.fg.green.. [[   _//_   ]],
+        tc.bg.black..tc.fg.yellow..[[ /  "" \  ]],
+        tc.bg.black..tc.fg.red..   [[ |    (   ]],
+        tc.bg.black..tc.fg.pink..  [[  \____/  ]],
+        tc.bg.black..tc.fg.green.. [[ --]]..tc.fg.yellow..[[--]]..tc.fg.red..[[--]]..tc.fg.pink..[[-- ]],
+        text = tc.fg.white,
+      },
     }
   end,
   ["s"] = function()
@@ -301,6 +310,38 @@ local construct =
         tc.bg.black..tc.fg.green..[[  \ __\'  ]],
         tc.bg.black..tc.fg.green..[[          ]],
         text = tc.fg.green,
+      },
+    }
+  end,
+  ["w"] = function()
+    return
+    {
+      ["windows10"] =
+      {
+        tc.bg.blue..tc.fg.black..[[ ,__,,__, ]],
+        tc.bg.blue..tc.fg.black..[[ |  ||  | ]],
+        tc.bg.blue..tc.fg.black..[[ |==||==| ]],
+        tc.bg.blue..tc.fg.black..[[ |__||__| ]],
+        tc.bg.blue..tc.fg.black..[[          ]],
+        text = tc.fg.blue,
+      },
+      ["windows11"] =
+      {
+        tc.bg.blue..tc.fg.black..[[ ,__,,__, ]],
+        tc.bg.blue..tc.fg.black..[[ |  ||  | ]],
+        tc.bg.blue..tc.fg.black..[[ |==||==| ]],
+        tc.bg.blue..tc.fg.black..[[ |__||__| ]],
+        tc.bg.blue..tc.fg.black..[[          ]],
+        text = tc.fg.blue,
+      },
+      ["Windows7"] =
+      {
+        tc.bg.blue..tc.fg.black..[[ ,__,,__, ]],
+        tc.bg.blue..tc.fg.black..[[ |  ||  | ]],
+        tc.bg.blue..tc.fg.black..[[ |==||==| ]],
+        tc.bg.blue..tc.fg.black..[[ |__||__| ]],
+        tc.bg.blue..tc.fg.black..[[          ]],
+        text = tc.fg.blue,
       },
     }
   end,
@@ -362,9 +403,49 @@ end
 get.bat = function()
   if get.access("/sys/class/power_supply/BAT0/capacity") then
     local b = io.open("/sys/class/power_supply/BAT0/capacity", "r")
+    if b then b = b:read("*a") end
     return tonumber(b).."%" or "na"
   end
   return "na"
+end
+
+get.temp = function()
+  if get.access("/sys/class/thermal/thermal_zone0/temp") then
+    local t = io.open("/sys/class/thermal/thermal_zone0/temp")
+    if t then t = t:read("*a") end
+    return (math.floor(t/1000*2+.5)/2).."°" or "na"
+  end
+  return "na"
+end
+
+get.color = function()
+  return tc.bg.red.."  "..tc.bg.yellow.."  "..tc.bg.green.."  "..tc.bg.cyan.."  "..tc.bg.blue.."  "..tc.bg.pink.."  "..tc.bg.white.."  "..tc.bg.black.."  "..tc.normal
+end
+
+get.term = function()
+  local tr = os.getenv("TERM")
+  if tr == "" then
+    return "na"
+  end
+  return tr
+end
+
+get.shell = function()
+  local sh = tokenize(os.getenv("SHELL"))
+  for i = #sh, 1, -1 do
+    if sh[i] == "/" then
+      return table.concat(sh, "", #sh-(#sh-i)+1, #sh)
+    end
+  end
+  return "na"
+end
+
+get.date = function()
+  return os.date("%D", os.time()) or "na"
+end
+
+get.time = function()
+  return os.date("%H:%M:%S", os.time()) or "na"
 end
 
 -- }}}
@@ -375,6 +456,16 @@ while true do
     local dobreak
     args =
     {
+      ["test"] = function(x)
+        print("Directory to check?\n")
+        io.write(" > ")
+        local dir = get.dir(io.read())
+        io.write("\n")
+        for i = 1, #dir do
+          print(dir[i])
+        end
+        dobreak = true
+      end,
       ["-os"] = function(i)
         os_release = arg[i+1]
       end,
@@ -426,6 +517,7 @@ while true do
     }
     args["--os-release"] = args["-os"]
     args["--hostname"] = args["-hn"]
+    args["--override"] = args["-o"]
     args["--kernel-version"] = args["-kv"]
     args["--separator"] = args["-s"]
     args["--help"] = args["-h"]

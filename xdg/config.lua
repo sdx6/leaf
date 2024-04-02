@@ -10,15 +10,15 @@ functions:
 
   number get.days(nil):
     returns:
-      the days uptime
+      the days part of the total uptime
 
   number get.hours(nil):
     returns:
-      the hours uptime
+      the hours part of the total uptime
 
   number get.mins(nil):
     returns:
-      the mins uptime
+      the minutes part of the total uptime
 
   number get.ip(string:device):
     device:
@@ -54,7 +54,24 @@ functions:
   string get.bat(nil)
     returns:
       percentage battery level of BAT0, if there is a connected battery
-      "na" if there is no connected battery
+      "na" if there is no connected battery, or is not a number
+
+  string get.temp(nil)
+    returns:
+      the temperature of the CPU, rounded to the nearest whole number, or tens decimal place
+      "na" if file opening fails, or is not a number
+
+  string get.color(nil)
+    returns:
+      a string that showcases the terminal color palette in small 1x2 squares
+
+  string get.term(nil)
+    returns:
+      the terminal that leaf is running under
+
+  string get.shell(nil)
+    returns:
+      the shell that leaf is running under
 
 variables:
 
@@ -109,21 +126,21 @@ variables:
 
 default configuration:
 
-  return function(get, ip, separator, distro, icon, tc, version, hostname, os_release)
-    version = "/proc/version"
-    hostname = "/etc/hostname"
-    os_release = "/etc/os-release"
-
-    separator = "│"
-
-    display =
-    {
-      string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro),
-      string.format("%s "..icon.text.."kv"..tc.normal.." "..separator.." %s\n", icon[2]..tc.normal, get.kernel(version)),
-      string.format("%s "..icon.text.."up"..tc.normal.." "..separator.." %dd %dh %dm\n", icon[3]..tc.normal, get.days(), get.hours(), get.mins()),
-      string.format("%s "..icon.text.."ip"..tc.normal.." "..separator.." %s\n", icon[4]..tc.normal, ip),
-      string.format("%s "..icon.text.."hn"..tc.normal.." "..separator.." %s\n", icon[5]..tc.normal, get.host(hostname)),
-    }
-  end
-
 --]]
+
+return function(get, ip, separator, distro, icon, tc, version, hostname, os_release)
+  version = "/proc/version"
+  hostname = "/etc/hostname"
+  os_release = "/etc/os-release"
+
+  separator = "│"
+
+  display =
+  {
+    string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro),
+    string.format("%s "..icon.text.."kv"..tc.normal.." "..separator.." %s\n", icon[2]..tc.normal, get.kernel(version)),
+    string.format("%s "..icon.text.."up"..tc.normal.." "..separator.." %dd %dh %dm\n", icon[3]..tc.normal, get.days(), get.hours(), get.mins()),
+    string.format("%s "..icon.text.."ip"..tc.normal.." "..separator.." %s\n", icon[4]..tc.normal, ip),
+    string.format("%s "..icon.text.."hn"..tc.normal.." "..separator.." %s\n", icon[5]..tc.normal, get.host(hostname)),
+  }
+end
