@@ -73,6 +73,14 @@ functions:
     returns:
       the shell that leaf is running under
 
+  string get.date(nil)
+    returns:
+      the date, in MM/DD/YY format
+
+  string get.time(nil)
+    returns:
+      the time, in HH:MM:SS format
+
 variables:
 
   ip:
