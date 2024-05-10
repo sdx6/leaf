@@ -93,10 +93,10 @@ variables:
     the distribution icon using the default os-release location
 
   icon:
-    a table with 5 elements that represent the distribution icon using the distro variable, and an additional one to specify the text color:
+    a table with 5 elements that represent the distribution icon using the distro variable, and an additional one to specify the text color
 
   tc:
-    a table of colors and color states:
+    a table of text colors and color states:
     {
       fg =
       {
@@ -132,23 +132,26 @@ variables:
   os_release:
     the default os-release path, "/etc/os-release"
 
+  uptime:
+    the uptime, written in a nice format that automatically removes 0s and concatenates the rest
+
 default configuration:
 
 --]]
 
-return function(get, ip, separator, distro, icon, tc, version, hostname, os_release)
+return function(get, ip, separator, distro, icon, tc, version, hostname, os_release, uptime)
   version = "/proc/version"
   hostname = "/etc/hostname"
   os_release = "/etc/os-release"
 
-  separator = "│"
+  separator = "▎"
 
   display =
   {
-    string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro),
-    string.format("%s "..icon.text.."kv"..tc.normal.." "..separator.." %s\n", icon[2]..tc.normal, get.kernel(version)),
-    string.format("%s "..icon.text.."up"..tc.normal.." "..separator.." %dd %dh %dm\n", icon[3]..tc.normal, get.days(), get.hours(), get.mins()),
-    string.format("%s "..icon.text.."ip"..tc.normal.." "..separator.." %s\n", icon[4]..tc.normal, ip),
-    string.format("%s "..icon.text.."hn"..tc.normal.." "..separator.." %s\n", icon[5]..tc.normal, get.host(hostname)),
+    icon[1]..tc.normal..icon.text..separator.."os"..tc.normal.." "..separator..distro.."\n",
+    icon[2]..tc.normal..icon.text..separator.."kv"..tc.normal.." "..separator..get.kernel(version).."\n",
+    icon[3]..tc.normal..icon.text..separator.."up"..tc.normal.." "..separator..uptime.."\n",
+    icon[4]..tc.normal..icon.text..separator.."ip"..tc.normal.." "..separator..ip.."\n",
+    icon[5]..tc.normal..icon.text..separator.."hn"..tc.normal.." "..separator..get.host(hostname).."\n",
   }
 end

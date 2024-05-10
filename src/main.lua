@@ -354,14 +354,15 @@ local construct =
 
 get = get or {}
 leafver = leafver or "na"
+exit = exit or 0
 
 -- }}}
 -- {{{ the fetching
 
-os_release = "/etc/os-release"
-version = "/proc/version"
-hostname = "/etc/hostname"
-separator = "│"
+local os_release = "/etc/os-release"
+local version = "/proc/version"
+local hostname = "/etc/hostname"
+local separator = "▎"
 
 get.distro = function(osr)
   local d = {}
@@ -456,22 +457,14 @@ while true do
     local dobreak
     args =
     {
-      ["test"] = function(x)
-        print("Directory to check?\n")
-        io.write(" > ")
-        local dir = get.dir(io.read())
-        io.write("\n")
-        for i = 1, #dir do
-          print(dir[i])
-        end
-        dobreak = true
-      end,
       ["-os"] = function(i)
         os_release = arg[i+1]
       end,
+
       ["-kv"] = function(i)
         version = arg[i+1]
       end,
+
       ["-hn"] = function(i)
         hostname = arg[i+1]
       end,
@@ -479,6 +472,7 @@ while true do
       ["-o"] = function(i)
         distro = arg[i+1]
       end,
+
       ["-s"] = function(i)
         separator = arg[i+1]
       end,
@@ -498,7 +492,7 @@ while true do
           "├── -o --override        │ Manually set the icon and os field",
           "│   └── [STRING]         │ The distribution ID",
           "├── -s --separator       │ Set a character to separate the field from the value",
-          "│   └── [STRING]         │ e.g, the default separator, \"│\"",
+          "│   └── [STRING]         │ e.g, the default separator, \"▎\"",
           "├── -h --help            │ Shows this screen!!",
           "└── -v --version         │ Display leaf version",
           "",
@@ -512,6 +506,7 @@ while true do
 
       ["-v"] = function()
         print("leaf v"..leafver)
+        print("github.com/sdx6/leaf")
         dobreak = true
       end
     }
@@ -555,31 +550,46 @@ while true do
     end
   end
 
-  distro = distro or get.distro(os_release)
+  local distro = distro or get.distro(os_release)
+
+  local uptime = ""
+  local days = get.days()
+  local hours = get.hours()
+  local mins = get.mins()
+  if days then
+    uptime = days.."d "
+  end
+  if hours then
+    uptime = uptime..hours.."h "
+  end
+  if mins then
+    uptime = uptime..mins.."m"
+  end
   if construct[string.sub(distro,1,1)]()[distro] then
     icon = construct[string.sub(distro,1,1)]()[distro]
     if get.access(os.getenv("HOME").."/.config/sdx6/leaf/config.lua") then
       conf = dofile(os.getenv("HOME").."/.config/sdx6/leaf/config.lua")
       if conf then
-        conf(get, ip, separator, distro, icon, tc, version, hostname)
+        conf(get, ip, separator, distro, icon, tc, version, hostname, os_release, uptime)
       end
     end
-    icon = construct[string.sub(get.distro(os_release),1,1)]()[get.distro(os_release)]
+    icon = icon or construct[string.sub(get.distro(os_release),1,1)]()[get.distro(os_release)]
     display = display or
     {
-      string.format("%s "..icon.text.."os"..tc.normal.." "..separator.." %s\n", icon[1]..tc.normal, distro),
-      string.format("%s "..icon.text.."kv"..tc.normal.." "..separator.." %s\n", icon[2]..tc.normal, get.kernel(version)),
-      string.format("%s "..icon.text.."up"..tc.normal.." "..separator.." %dd %dh %dm\n", icon[3]..tc.normal, get.days(), get.hours(), get.mins()),
-      string.format("%s "..icon.text.."ip"..tc.normal.." "..separator.." %s\n", icon[4]..tc.normal, ip),
-      string.format("%s "..icon.text.."hn"..tc.normal.." "..separator.." %s\n", icon[5]..tc.normal, get.host(hostname)),
+      icon[1]..tc.normal..icon.text.."▎os"..tc.normal.." "..separator.." "..distro.."\n",
+      icon[2]..tc.normal..icon.text.."▎kv"..tc.normal.." "..separator.." "..get.kernel(version).."\n",
+      icon[3]..tc.normal..icon.text.."▎up"..tc.normal.." "..separator.." "..uptime.."\n",
+      icon[4]..tc.normal..icon.text.."▎ip"..tc.normal.." "..separator.." "..ip.."\n",
+      icon[5]..tc.normal..icon.text.."▎hn"..tc.normal.." "..separator.." "..get.host(hostname).."\n",
     }
     for i = 1, #display do
       io.write(display[i])
     end
-  else
-    print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))
-    print("\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it, or pull request including the required distribution icon")
+    break
   end
+  print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))
+  print("\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it, or pull request including the required distribution icon")
+  exit = 1
   break
 end
 

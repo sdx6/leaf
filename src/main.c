@@ -17,7 +17,7 @@
 // }}}
 // {{{ define
 
-#define VERSION "1.3.2"
+#define VERSION "1.3.4"
 #define LUA_MAIN "/usr/lib/sdx6/leaf/main.lua"
 #define LUA_MAIN_LOCAL "/.local/share/sdx6/leaf/main.lua"
 
@@ -66,7 +66,9 @@ static int lua_getdays(lua_State* lua)
   struct sysinfo linuxinfo;
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
 
-  lua_pushinteger(lua, linuxinfo.uptime / 86400);
+  int res = linuxinfo.uptime / 86400;
+  if (res == 0) lua_pushnil(lua);
+  else lua_pushinteger(lua, res);
   return 1;
 }
 
@@ -76,7 +78,9 @@ static int lua_gethours(lua_State* lua)
   if(sysinfo(&linuxinfo) != 0) perror("linuxinfo");
 
   int days = linuxinfo.uptime / 86400;
-  lua_pushinteger(lua, (linuxinfo.uptime / 3600) - (days * 24));
+  int res = (linuxinfo.uptime / 3600) - (days * 24);
+  if (res == 0) lua_pushnil(lua);
+  else lua_pushinteger(lua, res);
   return 1;
 }
 
@@ -87,7 +91,9 @@ static int lua_getmins(lua_State* lua)
 
   int days = linuxinfo.uptime / 86400;
   int hours = (linuxinfo.uptime / 3600) - (days * 24);
-  lua_pushinteger(lua, (linuxinfo.uptime / 60) - (days * 1440) - (hours * 60));
+  int res = (linuxinfo.uptime / 60) - (days * 1440) - (hours * 60);
+  if (res == 0) lua_pushnil(lua);
+  else lua_pushinteger(lua, res);
   return 1;
 }
 
@@ -228,6 +234,8 @@ int main(int argc, char* argv[])
     lua_pushstring(lua, VERSION);
     lua_setglobal(lua, "leafver");
   }
+  lua_pushinteger(lua, 0);
+  lua_setglobal(lua, "exit");
 
   // }}}
   // {{{ start lua
@@ -259,6 +267,8 @@ int main(int argc, char* argv[])
 
   // }}}
 
+  lua_getglobal(lua, "exit");
+  int exit = luaL_checkinteger(lua, -1);
   lua_close(lua);
-  return 0;
+  return exit;
 }

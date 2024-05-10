@@ -2,11 +2,11 @@
 
 A minimal, blazingly fast fetch program for Linux
 
-Shows only the useful things, and does them pretty well
+Shows only the useful things and does them pretty well
 
 I made this out of dissatisfaction with fetch scripts, either being way too slow or showing way too much information
 
-`leaf` is intended to be used as a greeter to your shell, where over SSH, it would show important information to your session that can be looked at from a glance
+`leaf` is intended to be used as a greeter to your shell, where over SSH it would show important information to your session that can be looked at from a glance
 
 `leaf` is faster than all fetch scripts currently, at ~3ms on my hardware, compared to ~3s (neofetch, ~500ms cached), ~20ms (fastfetch), ~15ms (nofetch)
 
@@ -19,7 +19,9 @@ I made this out of dissatisfaction with fetch scripts, either being way too slow
 
 # Contributing
 
-Contributions to actual code is not really needed, all bases have been covered as far as necessary quick-lookup informationn
+Anyone is welcome to make a package for `leaf`
+
+Contributions to actual code is not really needed, all bases have been covered as far as necessary quick-lookup information goes
 
 If your distribution is not supported by `leaf`, and you want to make it supported, fork the repository, and make a pull request with your distribution included
 
@@ -32,10 +34,10 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   *(Code is best viewed in `vim`)*
 
-  To add a distribution, first find the **distribution ID**, which can be found by running `cat /etc/os-release` on most Linux distributions 
+  To add a distribution, first find the **distribution ID** by running `cat /etc/os-release` on most Linux distributions 
   ```
    [/home/leah] (07:58:54)
-   > cat /etc/os-release
+   > strat pkgs cat /etc/os-release
   NAME="Arch Linux"
   PRETTY_NAME="Arch Linux"
   ID=arch
@@ -51,13 +53,27 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   The ID here for my Arch Linux stratum is "arch", under the "ID" field
 
-  Take the first letter of the distribution ID, and create a table with that letter as the key, if it doesn't exist already
+  Take the first letter of the distribution ID, and find an entry in `construct` that has its first initial as the key,
+
+  For "arch" this would be "a", and I would add it to the key `["a"] = function()`,
 
   Inside of that table, make another table with the distribution ID as the key
 
   *(This is not a Lua tutorial)*
 
   Create ASCII art for the distribution icon, make sure to adhere to the standard look of the previous icons
+
+  ```lua
+  ["arch"] =
+  {
+    tc.bg.cyan..tc.fg.black..[[          ]],
+    tc.bg.cyan..tc.fg.black..[[    /\    ]],
+    tc.bg.cyan..tc.fg.black..[[   /  \   ]],
+    tc.bg.cyan..tc.fg.black..[[  /_/\_\  ]],
+    tc.bg.cyan..tc.fg.black..[[          ]],
+    text = tc.fg.cyan,
+  },
+  ```
 
 
   ### Making an icon
@@ -81,7 +97,7 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   - DO NOT fill with hashtags (or fill in general), if you need a fill color, it's probably better off as a background color
 
-  - Set the text property to the main color of the icon, if there are more than one, choose the one that appears more often
+  - Set the text property to the main color of the icon, if there are more than one, choose the one that appears more often or is more representative
 
   - Make sure to keep the icon within 1-2 columns and 1 row away from all edges (besides underscores and commas)
   ```
@@ -164,6 +180,6 @@ Optionally, install locally instead of system (~/.local/bin/)
 
 The default configuration file (once `# make install` is run) is located in /etc/xdg/sdx6/leaf/
 
-`leaf` looks for its configuration file in a the same space, ~/.config/sdx6/leaf/config.lua
+Documentation for additional functions and variables is listed there as well
 
-The documentation for configuration is written there
+`leaf` looks for its configuration file in the same space, ~/.config/sdx6/leaf/config.lua
