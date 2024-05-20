@@ -17,6 +17,7 @@ I made this out of dissatisfaction with fetch scripts, either being way too slow
 
 ![](2.png)
 
+
 # Contributing
 
 Anyone is welcome to make a package for `leaf`
@@ -86,9 +87,10 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   > Examples of this are the Arch Linux and Debian Linux icons
 
+
   2. Multiple colors, fill / background, or multiple line colors
 
-  > Set the background to either black or white, and the foreground to representative of the **fill color**
+  > Set the background to either black or white, and have the foreground representative of the **fill color**
 
   > Examples of this are the Void Linux and NixOS icons
 
@@ -99,7 +101,7 @@ If your distribution is not supported by `leaf`, and you want to make it support
 
   - Set the text property to the main color of the icon, if there are more than one, choose the one that appears more often or is more representative
 
-  - Make sure to keep the icon within 1-2 columns and 1 row away from all edges (besides underscores and commas)
+  - Make sure to keep the icon within 1-2 columns and 1 row away from all edges (besides underscores, bars and commas)
   ```
   ,__________,
   | ,______, |
@@ -118,13 +120,16 @@ If your distribution is not supported by `leaf`, and you want to make it support
    # make test
   ```
 
-  Run `leaf` again, with the `--override` option (shown below), followed by the ID of the icon you added
-
-  ![](5.png)
+  Run `leaf` again, with the `--override` option, followed by the ID of the icon you added
 
   If you feel it's good enough, fork the project, and make a pull request~
 
 </details>
+
+
+# Packages
+
+None yet...
 
 
 # Compiling from source

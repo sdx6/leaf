@@ -4,9 +4,14 @@
 ---@diagnostic disable: unused-local
 -- vim:foldmethod=marker
 
+--{{{ documentation
 --[[
 
 functions:
+
+  all functions can be used any time for any purpose in the config file,
+  you can even create new function if you want, some of these are designed to help simplify the process
+  the get functions are provided by leaf and directly related to their C functions
 
   number get.days(nil):
     returns:
@@ -81,7 +86,39 @@ functions:
     returns:
       the time, in HH:MM:SS format
 
+  string get.cpu.model(nil)
+    returns:
+      the full CPU model and core information
+
+  number get.cpu.threads(nil)
+    returns:
+      the total amount of CPUs in the CPU :)
+
+  string get.ram.total(nil)
+    returns:
+      the total amount of RAM in GiB, with 2 decimal places for MiB
+
+  string get.ram.free(nil)
+    returns:
+      the amount of RAM not in use in GiB, with 2 decimal places for MiB
+
+  string get.ram.used(nil)
+    returns:
+      the amount of RAM currently in use in GiB, with 2 decimal places for MiB
+
+  string get.user()
+    returns:
+      the user, equivalent to `whoami`
+
+  string get.mobo()
+    returns:
+      the host manufacturer and model, may be related to libvirt / virtualbox on VMs
+
 variables:
+
+  variables that leaf provides to the config
+  these are used to edit the appearance of the display without having to run the same code twice
+  none of the variables are meant to be changed, but you can if you like
 
   ip:
     ip address auto selected from existing devices
@@ -123,35 +160,123 @@ variables:
       normal,
     }
 
-  version:
-    the default version path, "/proc/version"
-
-  hostname:
-    the default hostname path, "/etc/hostname"
-
-  os_release:
-    the default os-release path, "/etc/os-release"
-
   uptime:
     the uptime, written in a nice format that automatically removes 0s and concatenates the rest
 
-default configuration:
+  version:
+    the path to the version file
+
+  hostname:
+    the path to the hostname file
+
+arguments:
+
+  these variables are called by leaf earlier in code
+  after the args are parsed and before it starts drawing, the globals with the same name are replaced
+  this lets you supply their value here, instead of using the program arguments
+
+  string version:
+    the path to the kernel version information, usually "/proc/version"
+
+  string hostname:
+    the path to the system hostname, usually "/etc/hostname"
+
+  string os_release:
+    the path to the operating system information, usually "/etc/os-release"
+
+  string distro:
+    the distribution ID to override the OS with
+
+  bool force:
+    whether not to use Linux generic in the case of missed support 
 
 --]]
+--}}}
+--{{{ default configuration
+--[[
 
-return function(get, ip, separator, distro, icon, tc, version, hostname, os_release, uptime)
-  version = "/proc/version"
-  hostname = "/etc/hostname"
-  os_release = "/etc/os-release"
-
-  separator = "▎"
-
-  display =
+return
+{
+  args =
   {
-    icon[1]..tc.normal..icon.text..separator.."os"..tc.normal.." "..separator..distro.."\n",
-    icon[2]..tc.normal..icon.text..separator.."kv"..tc.normal.." "..separator..get.kernel(version).."\n",
-    icon[3]..tc.normal..icon.text..separator.."up"..tc.normal.." "..separator..uptime.."\n",
-    icon[4]..tc.normal..icon.text..separator.."ip"..tc.normal.." "..separator..ip.."\n",
-    icon[5]..tc.normal..icon.text..separator.."hn"..tc.normal.." "..separator..get.host(hostname).."\n",
+    version = "/proc/version",
+    hostname = "/etc/hostname",
+    os_release = "/etc/os-release",
+    distro = nil,
+    force = false,
+  },
+
+  config = function(get, ip, separator, distro, icon, tc, uptime, version, hostname)
+
+    separator = "▎"
+
+    display =
+    {
+      icon[1]..tc.normal..icon.text..separator.."os"..tc.normal.." "..separator..distro.."\n",
+      icon[2]..tc.normal..icon.text..separator.."kv"..tc.normal.." "..separator..get.kernel(version).."\n",
+      icon[3]..tc.normal..icon.text..separator.."up"..tc.normal.." "..separator..uptime.."\n",
+      icon[4]..tc.normal..icon.text..separator.."ip"..tc.normal.." "..separator..ip.."\n",
+      icon[5]..tc.normal..icon.text..separator.."hn"..tc.normal.." "..separator..get.host(hostname).."\n",
+    }
+  end,
+}
+
+--]]
+--}}}
+
+--{{{ example configurations
+--[[
+
+neofetch theme:
+
+  return
+  {
+    config = function(get, ip, separator, distro, icon, tc, uptime, version, hostname)
+
+      separator = ": "
+      local header = get.user().."@"..get.host(hostname)
+      local bar = ""
+        for _ = 1, #header do
+        bar = bar.."-"
+      end
+      display =
+      {
+        icon[1]..tc.normal..icon.text..tc.normal.." "..header.."\n",
+        icon[2]..tc.normal..icon.text..tc.normal.." "..bar.."\n",
+        icon[3]..tc.normal..icon.text.." OS"..tc.normal..separator..distro.."\n",
+        icon[4]..tc.normal..icon.text.." Host"..tc.normal..separator..get.mobo().."\n",
+        icon[5]..tc.normal..icon.text.." Kernel"..tc.normal..separator..get.kernel(version).."\n",
+        icon.text.."           Shell"..tc.normal..separator..get.shell().."\n",
+        icon.text.."           DE"..tc.normal..separator..get.de().."\n",
+        icon.text.."           Terminal"..tc.normal..separator..get.term().."\n",
+        icon.text.."           CPU"..tc.normal..separator..get.cpu.model().."\n",
+        icon.text.."           RAM"..tc.normal..separator..get.ram.used().." / "..get.ram.total().."\n",
+        "           "..get.color().."\n",
+      }
+    end,
   }
-end
+
+--]]
+--}}}
+--{{{ example configuration modules
+--[[
+
+RAM usage:
+
+  get.ram.used().." "..separator..get.ram.total().."\n",
+
+user@hostname(ip):
+
+  tc.fg.red..get.user()..tc.fg.yellow.."@"..tc.fg.green..get.host(hostname)..tc.fg.cyan.."("..tc.fg.blue..ip..tc.fg.pink..")\n",
+
+distro(kernel):
+  
+  icon.text..distro..tc.normal.." ("..get.kernel(version)..")\n", 
+
+terminal information:
+  
+  get.shell().." "..separator..get.term().."\n", 
+
+
+--]]
+--}}}

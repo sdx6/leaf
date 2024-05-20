@@ -211,6 +211,40 @@ local construct =
       },
     }
   end,
+  ["h"] = function()
+    return
+    {
+    }
+  end,
+  ["i"] = function()
+    return
+    {
+    }
+  end,
+  ["j"] = function()
+    return
+    {
+    }
+  end,
+  ["k"] = function()
+    return
+    {
+    }
+  end,
+  ["l"] = function()
+    return
+    {
+      ["linux"] =
+      {
+        tc.bg.black..tc.fg.white..[[ ,______, ]],
+        tc.bg.black..tc.fg.white..[[ |      | ]],
+        tc.bg.black..tc.fg.white..[[ |      | ]],
+        tc.bg.black..tc.fg.white..[[ |______| ]],
+        tc.bg.black..tc.fg.white..[[          ]],
+        text = tc.fg.yellow,
+      },
+    }
+  end,
   ["m"] = function()
     return
     {
@@ -271,6 +305,21 @@ local construct =
       },
     }
   end,
+  ["p"] = function()
+    return
+    {
+    }
+  end,
+  ["q"] = function()
+    return
+    {
+    }
+  end,
+  ["r"] = function()
+    return
+    {
+    }
+  end,
   ["s"] = function()
     return
     {
@@ -283,6 +332,11 @@ local construct =
         tc.bg.blue..tc.fg.black..[[          ]],
         text = tc.fg.blue,
       },
+    }
+  end,
+  ["t"] = function()
+    return
+    {
     }
   end,
   ["u"] = function()
@@ -305,9 +359,9 @@ local construct =
       ["void"] =
       {
         tc.bg.black..tc.fg.white..[[    __    ]],
-        tc.bg.black..tc.fg.green..[[  ,]]..tc.fg.white..[[\   \  ]],
-        tc.bg.black..tc.fg.green..[[ |'\]]..tc.fg.white..[[()\,| ]],
-        tc.bg.black..tc.fg.green..[[  \ __\'  ]],
+        tc.bg.black..tc.fg.green..[[  _]]..tc.fg.white..[[\   \  ]],
+        tc.bg.black..tc.fg.green..[[ | \]]..tc.fg.white..[[()\_| ]],
+        tc.bg.black..tc.fg.green..[[  \ __\]]..tc.fg.white..[[   ]],
         tc.bg.black..tc.fg.green..[[          ]],
         text = tc.fg.green,
       },
@@ -343,6 +397,21 @@ local construct =
         tc.bg.blue..tc.fg.black..[[          ]],
         text = tc.fg.blue,
       },
+    }
+  end,
+  ["x"] = function()
+    return
+    {
+    }
+  end,
+  ["y"] = function()
+    return
+    {
+    }
+  end,
+  ["z"] = function()
+    return
+    {
     }
   end,
 }
@@ -449,9 +518,89 @@ get.time = function()
   return os.date("%H:%M:%S", os.time()) or "na"
 end
 
--- }}}
--- {{{ process arguments
+get.de = function()
+  return string.lower(tostring(os.getenv("XDG_SESSION_DESKTOP") or "na"))
+end
 
+get.cpu =
+{
+  model = function()
+    local d = {}
+    for l in io.lines("/proc/cpuinfo") do
+      table.insert(d, l)
+    end
+    return string.lower(d[5]:sub(14, #d[5]))
+  end,
+  threads = function()
+    local d = {}
+    for l in io.lines("/proc/cpuinfo") do
+      table.insert(d, l)
+    end
+    return d[11]:sub(12, #d[5])
+  end
+}
+
+get.ram =
+{
+  total = function()
+    local d = {}
+    for l in io.lines("/proc/meminfo") do
+      table.insert(d, l)
+    end
+    return string.format("%1.2f", d[1]:sub(17, #d[1] - 3) / 1024000).."gib"
+  end,
+  free = function()
+    local d = {}
+    for l in io.lines("/proc/meminfo") do
+      table.insert(d, l)
+    end
+    return string.format("%1.2f", d[3]:sub(17, #d[2] - 3) / 1024000).."gib"
+  end,
+  used = function()
+    local d = {}
+    for l in io.lines("/proc/meminfo") do
+      table.insert(d, l)
+    end
+    return string.format("%1.2f", d[1]:sub(17, #d[1] - 3) / 1024000) - string.format("%1.2f", d[3]:sub(17, #d[2] - 3) / 1024000).."gib"
+  end,
+}
+
+get.user = function()
+  return os.getenv("USER")
+end
+
+get.mobo = function()
+  local v = io.open("/sys/devices/virtual/dmi/id/board_vendor")
+  if v then
+    v = v:read("*a"):sub(1, -2)
+  end
+  local m = io.open("/sys/devices/virtual/dmi/id/board_name")
+  if m then
+    m = m:read("*a"):sub(1, -2)
+  end
+  return string.lower((v or "na").." "..(m or "na"))
+end
+
+-- }}}
+-- {{{ parse config
+
+local conf = {}
+if get.access(os.getenv("HOME").."/.config/sdx6/leaf/config.lua") then
+  conf = dofile(os.getenv("HOME").."/.config/sdx6/leaf/config.lua")
+end
+if conf.args then
+  version = conf.args.version or version
+  hostname = conf.args.hostname or hostname
+  os_release = conf.args.os_release or os_release
+  if conf.args.force then
+    distro = "linux"
+  else
+    distro = conf.args.distro or nil
+  end
+end
+
+--}}}
+--{{{ process arguments
 while true do
   if #arg > 0 then
     local dobreak
@@ -473,6 +622,10 @@ while true do
         distro = arg[i+1]
       end,
 
+      ["-f"] = function()
+        distro = "linux"
+      end,
+
       ["-s"] = function(i)
         separator = arg[i+1]
       end,
@@ -491,6 +644,7 @@ while true do
           "│   └── [STRING]         │ The path to your hostname file",
           "├── -o --override        │ Manually set the icon and os field",
           "│   └── [STRING]         │ The distribution ID",
+          "├── -f --force           │ Use Linux generic in the case of missed support",
           "├── -s --separator       │ Set a character to separate the field from the value",
           "│   └── [STRING]         │ e.g, the default separator, \"▎\"",
           "├── -h --help            │ Shows this screen!!",
@@ -513,6 +667,7 @@ while true do
     args["--os-release"] = args["-os"]
     args["--hostname"] = args["-hn"]
     args["--override"] = args["-o"]
+    args["--force"] = args["-f"]
     args["--kernel-version"] = args["-kv"]
     args["--separator"] = args["-s"]
     args["--help"] = args["-h"]
@@ -527,7 +682,7 @@ while true do
 
   -- }}}
 
-  -- {{{ display
+  -- {{{ display result
 
   local ip = "na"
   local d = {}
@@ -550,8 +705,6 @@ while true do
     end
   end
 
-  local distro = distro or get.distro(os_release)
-
   local uptime = ""
   local days = get.days()
   local hours = get.hours()
@@ -565,30 +718,29 @@ while true do
   if mins then
     uptime = uptime..mins.."m"
   end
-  if construct[string.sub(distro,1,1)]()[distro] then
-    icon = construct[string.sub(distro,1,1)]()[distro]
+
+  distro = distro or get.distro(os_release)
+  icon = construct[string.sub(distro,1,1)]()[distro]
+  if icon then
     if get.access(os.getenv("HOME").."/.config/sdx6/leaf/config.lua") then
-      conf = dofile(os.getenv("HOME").."/.config/sdx6/leaf/config.lua")
-      if conf then
-        conf(get, ip, separator, distro, icon, tc, version, hostname, os_release, uptime)
+      if conf.config then
+        conf.config(get, ip, separator, distro, icon, tc, uptime, version, hostname)
       end
     end
-    icon = icon or construct[string.sub(get.distro(os_release),1,1)]()[get.distro(os_release)]
     display = display or
     {
-      icon[1]..tc.normal..icon.text.."▎os"..tc.normal.." "..separator.." "..distro.."\n",
-      icon[2]..tc.normal..icon.text.."▎kv"..tc.normal.." "..separator.." "..get.kernel(version).."\n",
-      icon[3]..tc.normal..icon.text.."▎up"..tc.normal.." "..separator.." "..uptime.."\n",
-      icon[4]..tc.normal..icon.text.."▎ip"..tc.normal.." "..separator.." "..ip.."\n",
-      icon[5]..tc.normal..icon.text.."▎hn"..tc.normal.." "..separator.." "..get.host(hostname).."\n",
+      icon[1]..tc.normal..icon.text..separator.."os"..tc.normal.." "..separator..distro.."\n",
+      icon[2]..tc.normal..icon.text..separator.."kv"..tc.normal.." "..separator..get.kernel(version).."\n",
+      icon[3]..tc.normal..icon.text..separator.."up"..tc.normal.." "..separator..uptime.."\n",
+      icon[4]..tc.normal..icon.text..separator.."ip"..tc.normal.." "..separator..ip.."\n",
+      icon[5]..tc.normal..icon.text..separator.."hn"..tc.normal.." "..separator..get.host(hostname).."\n",
     }
     for i = 1, #display do
       io.write(display[i])
     end
     break
   end
-  print(string.format("[FATAL ERROR]: Your OS, %s is not supported by leaf", distro))
-  print("\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it, or pull request including the required distribution icon")
+  print("[FATAL ERROR]: Your OS, "..distro.." is not supported by leaf\n\nPlease submit an issue about this at https://github.com/sdx6/leaf to include it,\nor a pull request including the required distribution icon\n\nYou may also use the --force argument to ignore this message")
   exit = 1
   break
 end

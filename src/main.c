@@ -17,7 +17,7 @@
 // }}}
 // {{{ define
 
-#define VERSION "1.3.4"
+#define VERSION "1.3.7"
 #define LUA_MAIN "/usr/lib/sdx6/leaf/main.lua"
 #define LUA_MAIN_LOCAL "/.local/share/sdx6/leaf/main.lua"
 
