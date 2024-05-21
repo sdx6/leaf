@@ -144,7 +144,7 @@ Clone the repository
 
 Depending on your distribution of choice, install the required programs using one of these commands:
 ```
- # apt install make clang luajit2
+ # apt install make clang luajit2 libluajit-5.1-dev
 ```
 ```
  # pacman -S make clang luajit
