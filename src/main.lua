@@ -630,6 +630,14 @@ while true do
         separator = arg[i+1]
       end,
 
+      ["-e"] = function(i)
+        local s = loadstring(arg[i+1])
+        if s then
+          s()
+        end
+        dobreak = true
+      end,
+
       ["-h"] = function()
         help =
         {
@@ -647,6 +655,8 @@ while true do
           "├── -f --force           │ Use Linux generic in the case of missed support",
           "├── -s --separator       │ Set a character to separate the field from the value",
           "│   └── [STRING]         │ e.g, the default separator, \"▎\"",
+          "├── -e --execute         │ Execute a chunk (Lua) to execute, and don't display",
+          "│   └── [STRING]         │ The chunk, e.g \"print(get.mobo())\"",
           "├── -h --help            │ Shows this screen!!",
           "└── -v --version         │ Display leaf version",
           "",
