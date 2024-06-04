@@ -166,7 +166,7 @@ environment.systemPackages =
 
 Move to the repository
 ```
- $ cd leaf/src/
+ $ cd leaf
 ```
 
 Build and install
