@@ -1,3 +1,5 @@
+# [This repository is abandoned and has moved to Codeberg, no more updates will be recieved here, send any pull requests / issues to the new host](https://codeberg.org/sdx6/leaf)
+
 # leaf - LEAh's Fetch
 
 A minimal, blazingly fast fetch program for Linux
